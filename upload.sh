@@ -28,6 +28,7 @@ SKIP_CHECK=""
 NO_DOCS=""
 PICK=""
 LANG_MODE=""
+PR_MODE=""
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -35,12 +36,15 @@ while [ $# -gt 0 ]; do
     --lang) LANG_MODE="${2:-zh}"; shift 2 ;;
     --pick|-i) PICK=1; shift ;;
     --push) PUSH=1; shift ;;
+    --pr) PR_MODE=1; shift ;;
     --dry-run) DRY=1; shift ;;
     --prune) PRUNE=1; shift ;;
     --no-docs) NO_DOCS=1; shift ;;
     --skip-check) SKIP_CHECK=1; shift ;;
     -h|--help)
-      echo "用法: upload.sh [--lang zh|en] [--pick] [--from claude|codebuddy|both] [--push] [--dry-run] [--prune] [--no-docs] [--skip-check]"
+      echo "用法: upload.sh [--lang zh|en] [--pick] [--from claude|codebuddy|both] [--push|--pr] [--dry-run] [--prune] [--no-docs] [--skip-check]"
+      echo "  --push  校验通过后直接提交并推送到 main"
+      echo "  --pr    校验通过后新建分支、推送并创建 Pull Request（描述自动中英双语）"
       exit 0 ;;
     *) echo "未知参数：$1" >&2; exit 1 ;;
   esac
@@ -79,8 +83,11 @@ is_ignored() {
 }
 
 # 取 skill 的说明：中文模式优先 descriptions.zh.json；英文模式用 SKILL.md 原文
+# 用法：skill_desc <skill 目录> [zh|en]，第二参数省略时跟随 LANG_MODE
 skill_desc() {
-  python3 - "$1/SKILL.md" "$ZH_MAP" "$(basename "$1")" "${LANG_MODE:-zh}" <<'PY'
+  local _dir="$1"
+  local _lang="${2:-${LANG_MODE:-zh}}"
+  python3 - "$_dir/SKILL.md" "$ZH_MAP" "$(basename "$_dir")" "$_lang" <<'PY'
 import json, re, sys
 skill_md, zh_map, name, lang = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
 
@@ -429,7 +436,7 @@ echo "=== 提交信息预览 / commit preview ==="
 cat "$msgfile"
 echo "======================"
 
-if [ -n "$PUSH" ]; then
+if [ -n "$PUSH" ] || [ -n "$PR_MODE" ]; then
   if [ -z "$SKIP_CHECK" ]; then
     msg "→ 上传前校验（validate.sh）..." "→ Running validation (validate.sh)..."
     if ! bash "$REPO_DIR/validate.sh" > /tmp/validate_out.txt 2>&1; then
@@ -445,12 +452,69 @@ if [ -n "$PUSH" ]; then
     echo "⚠️ 已用 --skip-check 跳过校验 / validation skipped"
   fi
 
-  git add -A
-  git -c user.name=BUTFL -c user.email=BUTFL@users.noreply.github.com commit -F "$msgfile"
-  git -c http.version=HTTP/1.1 push
-  msg "✓ 已提交并推送" "✓ committed and pushed"
+  if [ -n "$PR_MODE" ]; then
+    # ---- PR 流程：新建分支 → 提交 → 推送 → 创建中英双语 PR ----
+    BRANCH="sync/$(date '+%Y%m%d-%H%M%S')"
+    git checkout -b "$BRANCH" >/dev/null 2>&1
+    git add -A
+    git -c user.name=BUTFL -c user.email=BUTFL@users.noreply.github.com commit -F "$msgfile"
+    git -c http.version=HTTP/1.1 push -u origin "$BRANCH"
+
+    prfile="$(mktemp)"
+    {
+      echo "## 变更说明（中文）"
+      echo ""
+      if [ ${#ADD_LIST[@]} -gt 0 ]; then
+        echo "**新增 ${#ADD_LIST[@]} 个：**"
+        for n in "${ADD_LIST[@]}"; do echo "- \`$n\`：$(skill_desc "$DEST/$n" zh)"; done
+        echo ""
+      fi
+      if [ ${#UPD_LIST[@]} -gt 0 ]; then
+        echo "**更新 ${#UPD_LIST[@]} 个：**"
+        for n in "${UPD_LIST[@]}"; do echo "- \`$n\`：$(skill_desc "$DEST/$n" zh)"; done
+        echo ""
+      fi
+      if [ "$removed" -gt 0 ]; then
+        echo "**移除 $removed 个。**"
+        echo ""
+      fi
+      echo "> \`./validate.sh\` 全部通过；中英文档已自动同步（README.md / README.en.md）。"
+      echo ""
+      echo "---"
+      echo ""
+      echo "## Summary (English)"
+      echo ""
+      if [ ${#ADD_LIST[@]} -gt 0 ]; then
+        echo "**Added ${#ADD_LIST[@]}:**"
+        for n in "${ADD_LIST[@]}"; do echo "- \`$n\`: $(skill_desc "$DEST/$n" en)"; done
+        echo ""
+      fi
+      if [ ${#UPD_LIST[@]} -gt 0 ]; then
+        echo "**Updated ${#UPD_LIST[@]}:**"
+        for n in "${UPD_LIST[@]}"; do echo "- \`$n\`: $(skill_desc "$DEST/$n" en)"; done
+        echo ""
+      fi
+      if [ "$removed" -gt 0 ]; then
+        echo "**Removed $removed.**"
+        echo ""
+      fi
+      echo "> \`./validate.sh\` passed; both READMEs synced automatically."
+    } > "$prfile"
+
+    PR_TITLE="skills 更新 / skills update（$TODAY）"
+    echo "→ 创建 Pull Request..."
+    gh pr create --base main --head "$BRANCH" --title "$PR_TITLE" --body-file "$prfile"
+    msg "✓ 已创建 PR（分支：$BRANCH）" "✓ Pull Request created (branch: $BRANCH)"
+    git checkout main >/dev/null 2>&1
+    rm -f "$prfile"
+  else
+    git add -A
+    git -c user.name=BUTFL -c user.email=BUTFL@users.noreply.github.com commit -F "$msgfile"
+    git -c http.version=HTTP/1.1 push
+    msg "✓ 已提交并推送" "✓ committed and pushed"
+  fi
 else
-  msg "已写入仓库（未提交）。加 --push 可自动提交推送。" \
-      "Written to repo (not committed). Add --push to commit and push."
+  msg "已写入仓库（未提交）。加 --push 直接推送，或 --pr 创建 Pull Request。" \
+      "Written to repo (not committed). Add --push to push, or --pr to open a Pull Request."
 fi
 rm -f "$msgfile"
