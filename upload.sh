@@ -50,7 +50,9 @@ while [ $# -gt 0 ]; do
     --no-docs) NO_DOCS=1; shift ;;
     --skip-check) SKIP_CHECK=1; shift ;;
     -h|--help)
-      echo "用法: upload.sh [--lang zh|en] [--note \"说明\"] [--pick] [--from claude|codebuddy|both] [--push|--pr] [--dry-run] [--prune] [--no-docs] [--skip-check]"
+      echo "用法: upload.sh [--lang zh|en] [--note \"说明\"] [--pick] [--from claude|codex|codebuddy|both|all] [--push|--pr] [--dry-run] [--prune] [--no-docs] [--skip-check]"
+      echo "  --from  claude=~/.claude/skills（默认）codex=~/.codex/skills codebuddy=~/.codebuddy/skills"
+      echo "          both=Claude+Codex  all=三个都收集"
       echo "  --note  变更说明（可多次）：说明这次改了什么、为什么改，会写进提交信息/PR 描述"
       echo "  --push  校验通过后直接提交并推送到 main"
       echo "  --pr    校验通过后新建分支、推送并创建 Pull Request（描述自动中英双语）"
@@ -71,11 +73,16 @@ msg() {
 src_dirs() {
   case "$FROM" in
     claude)    echo "$HOME/.claude/skills" ;;
+    codex)     echo "$HOME/.codex/skills" ;;
     codebuddy) echo "$HOME/.codebuddy/skills" ;;
     both)
       echo "$HOME/.claude/skills"
+      echo "$HOME/.codex/skills" ;;
+    all)
+      echo "$HOME/.claude/skills"
+      echo "$HOME/.codex/skills"
       echo "$HOME/.codebuddy/skills" ;;
-    *) echo "未知 --from：$FROM（支持 claude|codebuddy|both）" >&2; exit 1 ;;
+    *) echo "未知 --from：$FROM（支持 claude|codex|codebuddy|both|all）" >&2; exit 1 ;;
   esac
 }
 
@@ -587,7 +594,7 @@ if [ -n "$PUSH" ] || [ -n "$PR_MODE" ]; then
     if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
       _cnt=$(ls -1 "$DEST" | wc -l | tr -d ' ')
       gh repo edit "${REPO_SLUG:-BUTFL/claude-skills}" --description \
-        "Claude Code skills 合集（${_cnt} 个）：一键安装、中英双语文档、上传前自动校验 | My Claude Code skills collection (${_cnt} skills): one-command install, bilingual docs, auto-validation before upload" \
+        "Claude Code / Codex skills 合集（${_cnt} 个）：一键安装、中英双语文档、上传前自动校验 | Claude Code / Codex skills collection (${_cnt}): one-command install, bilingual docs, auto-validation before upload" \
         >/dev/null 2>&1 || true
       msg "✓ 已同步仓库描述（${_cnt} 个 skill）" "✓ repo description synced (${_cnt} skills)"
     fi

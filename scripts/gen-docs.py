@@ -112,7 +112,7 @@ def build_zh(total: int, actual: set, zh: dict, others: list) -> list:
     A('')
     A('[English](README.en.md) | 简体中文')
     A('')
-    A(f'我的 Claude Code skills 合集（共 **{total} 个**），支持一键安装、更新与备份。')
+    A(f'我的 Claude Code / Codex skills 合集（共 **{total} 个**），支持一键安装、更新与备份。')
     A('')
     A('> 中文说明来自 `descriptions.zh.json`，英文说明来自 `descriptions.en.json`；'
       '两份 README 由 `scripts/gen-docs.py` 自动生成并保持同步。')
@@ -219,8 +219,10 @@ def build_zh(total: int, actual: set, zh: dict, others: list) -> list:
     A('| 参数 | 作用 |')
     A('|---|---|')
     A('| `--target claude` | 安装到 `~/.claude/skills`（默认） |')
+    A('| `--target codex` | 安装到 `~/.codex/skills` |')
     A('| `--target codebuddy` | 安装到 `~/.codebuddy/skills` |')
-    A('| `--target both` | 两边都装 |')
+    A('| `--target both` | Claude Code + Codex |')
+    A('| `--target all` | 三个都装 |')
     A('| `--force` | 覆盖已存在的同名 skill（默认跳过） |')
     A('')
     A('- 默认**跳过已存在**的 skill，不会误删你本地的其他 skill。')
@@ -241,7 +243,7 @@ def build_en(total: int, actual: set, en: dict, others: list) -> list:
     A('')
     A('English | [简体中文](README.md)')
     A('')
-    A(f'My **Claude Code skills** collection (total **{total}**), with one-command '
+    A(f'My **Claude Code / Codex skills** collection (total **{total}**), with one-command '
       'install, update and backup.')
     A('')
     A('> Chinese descriptions come from `descriptions.zh.json`, English ones from '
@@ -349,8 +351,10 @@ def build_en(total: int, actual: set, en: dict, others: list) -> list:
     A('| Flag | Effect |')
     A('|---|---|')
     A('| `--target claude` | Install into `~/.claude/skills` (default) |')
+    A('| `--target codex` | Install into `~/.codex/skills` |')
     A('| `--target codebuddy` | Install into `~/.codebuddy/skills` |')
-    A('| `--target both` | Install into both |')
+    A('| `--target both` | Claude Code + Codex |')
+    A('| `--target all` | Install into all three |')
     A('| `--force` | Overwrite existing skills (skipped by default) |')
     A('')
     A('- Existing skills are **skipped** by default; your other local skills are never deleted.')

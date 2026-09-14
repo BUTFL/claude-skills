@@ -2,7 +2,7 @@
 
 [English](CONTRIBUTING.en.md) | 简体中文
 
-本仓库收录的是 **Claude Code 的 skills**。为了保证一致性与安全，任何新增或修改都必须走完下面的流程，缺一不可。
+本仓库收录的是 **Claude Code / Codex 的 skills**（安装脚本同时支持二者与 CodeBuddy）。为了保证一致性与安全，任何新增或修改都必须走完下面的流程，缺一不可。
 
 ## 上传流程（强制）
 

@@ -1,18 +1,20 @@
 #!/usr/bin/env bash
-# 一键安装 / 更新本仓库的 skills 到 Claude Code 或 CodeBuddy。
+# 一键安装 / 更新本仓库的 skills 到 Claude Code / Codex / CodeBuddy。
 # 安装/更新时会打印每个 skill 的名称与用途：优先中文（descriptions.zh.json），缺失时回退 SKILL.md 原文。
 #
 # 用法：
 #   ./install.sh                        # 安装到 ~/.claude/skills
+#   ./install.sh --target codex         # 安装到 ~/.codex/skills
 #   ./install.sh --target codebuddy     # 安装到 ~/.codebuddy/skills
-#   ./install.sh --target both          # 两边都装
+#   ./install.sh --target both          # Claude Code + Codex
+#   ./install.sh --target all           # 三个都装
 #   ./install.sh --force                # 覆盖（更新）已存在的 skill
 #
-# 远程一键（私有仓库，用 gh 认证拉取）：
-#   gh repo clone BUTFL/claude-skills /tmp/claude-skills && /tmp/claude-skills/install.sh --target both
-#
-# 若仓库为 public，可免 clone：
+# 仓库是公开的，免 clone 一键安装：
 #   curl -fsSL https://raw.githubusercontent.com/BUTFL/claude-skills/main/install.sh | bash -s -- --target both
+#
+# 国内可用 Gitee 镜像：
+#   curl -fsSL https://gitee.com/BUTFL/claude-skills/raw/main/install.sh | bash -s -- --target both
 set -euo pipefail
 
 REPO_SLUG="${REPO_SLUG:-BUTFL/claude-skills}"
@@ -25,7 +27,12 @@ while [ $# -gt 0 ]; do
     --target) TARGET="${2:-claude}"; shift 2 ;;
     --force) FORCE="1"; shift ;;
     -h|--help)
-      echo "用法: install.sh [--target claude|codebuddy|both] [--force]"
+      echo "用法: install.sh [--target claude|codex|codebuddy|both|all] [--force]"
+      echo "  claude     ~/.claude/skills（默认）"
+      echo "  codex      ~/.codex/skills"
+      echo "  codebuddy  ~/.codebuddy/skills"
+      echo "  both       Claude Code + Codex"
+      echo "  all        三个都装"
       exit 0 ;;
     *) echo "未知参数：$1" >&2; exit 1 ;;
   esac
@@ -112,11 +119,16 @@ install_to() {
 echo "→ 安装 skills..."
 case "$TARGET" in
   claude)    install_to "$HOME/.claude/skills" "Claude Code" ;;
+  codex)     install_to "$HOME/.codex/skills" "Codex" ;;
   codebuddy) install_to "$HOME/.codebuddy/skills" "CodeBuddy" ;;
   both)
     install_to "$HOME/.claude/skills" "Claude Code"
+    install_to "$HOME/.codex/skills" "Codex" ;;
+  all)
+    install_to "$HOME/.claude/skills" "Claude Code"
+    install_to "$HOME/.codex/skills" "Codex"
     install_to "$HOME/.codebuddy/skills" "CodeBuddy" ;;
-  *) echo "--target 只支持 claude | codebuddy | both" >&2; exit 1 ;;
+  *) echo "--target 只支持 claude | codex | codebuddy | both | all" >&2; exit 1 ;;
 esac
 
 echo "完成。重启对应工具后新 skill 生效（已有的用 --force 覆盖）。"

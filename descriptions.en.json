@@ -41,6 +41,8 @@
   "session-report": "Generate an explorable HTML report of Claude Code session usage (tokens, cache, subagents, skills, expensive prompts) from ~/.claude/projects transcripts.",
   "skill-creator": "Create new skills, modify and improve existing skills, and measure skill performance. Use when users want to create a skill from scratch, edit, or optimize an existing skill, run evals to test a skill",
   "skill-development": "This skill should be used when the user wants to \"create a skill\", \"add a skill to plugin\", \"write a new skill\", \"improve skill description\", \"organize skill content\", or needs guidance on skill struc",
+  "skill-forge": "Create high-quality, production-grade skills for Claude Code. Expert guidance on skill architecture, workflow design, prompt engineering, and packaging. Use when user wants to create a new skill, buil",
+  "skill-review": "Quality review and audit for Claude Code skills. Analyzes skill structure, description quality, workflow design, token efficiency, and anti-patterns against best practices. Use when user wants to revi",
   "skill-sync": "Pull and install or update my personal skills collection from GitHub (the claude-skills repo). Use when the user says \"sync skills\", \"install my skills\", \"update skills\", \"restore skills\", or \"put all skills back\".",
   "slack-gif-creator": "Knowledge and utilities for creating animated GIFs optimized for Slack. Provides constraints, validation tools, and animation concepts. Use when users request animated GIFs for Slack like \"make me a G",
   "subagent-driven-development": "Use when executing implementation plans with independent tasks in the current session",

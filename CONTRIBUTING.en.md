@@ -2,8 +2,8 @@
 
 English | [简体中文](CONTRIBUTING.md)
 
-This repo collects **Claude Code skills**. Every addition or change must go through the
-process below — no exceptions.
+This repo collects **Claude Code / Codex skills** (the installer also supports CodeBuddy).
+Every addition or change must go through the process below — no exceptions.
 
 ## Upload flow (mandatory)
 

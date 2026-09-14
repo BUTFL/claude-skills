@@ -5,21 +5,23 @@ description: 从 GitHub 拉取并安装/更新我的个人 skills 合集（claud
 
 # Skill Sync
 
-把 `BUTFL/claude-skills`（公开仓库）里的 skills 安装或更新到本地。
+把 `BUTFL/claude-skills`（公开仓库）里的 skills 安装或更新到本地（支持 Claude Code / Codex / CodeBuddy）。
 
 ## 使用流程
 
 1. **确定安装目标**
    - 用户在 Claude Code 里 → `claude`（装到 `~/.claude/skills`）
+   - 用户在 Codex 里 → `codex`（装到 `~/.codex/skills`）
    - 用户在 CodeBuddy 里 → `codebuddy`（装到 `~/.codebuddy/skills`）
-   - 用户说两边都要 / 不确定 → `both`
+   - 用户说 Claude + Codex 都要 → `both`
+   - 三个都要 / 不确定 → `all`
 
 2. **执行安装**
 
    仓库是公开的，免 clone 一键安装：
 
    ```bash
-   curl -fsSL https://raw.githubusercontent.com/BUTFL/claude-skills/main/install.sh | bash -s -- --target <claude|codebuddy|both>
+   curl -fsSL https://raw.githubusercontent.com/BUTFL/claude-skills/main/install.sh | bash -s -- --target <claude|codex|codebuddy|both|all>
    ```
 
    更新已存在的 skill（覆盖旧版本）时追加 `--force`：
