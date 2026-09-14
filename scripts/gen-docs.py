@@ -54,7 +54,7 @@ CATEGORIES = [
         "example-command", "example-skill",
     ]),
     ("👤 个人", "👤 Personal", [
-        "add-tool-doc", "skill-sync",
+        "add-tool-doc", "skill-sync", "skills-hub",
     ]),
 ]
 
@@ -378,10 +378,104 @@ def load_map(path: str) -> dict:
         return {}
 
 
+# ---------- skills-hub：把散落的 skill 蒸馏成一个总索引入口（自动生成） ----------
+
+HUB_DIR = os.path.join(SKILLS, 'skills-hub')
+HUB_PATH = os.path.join(HUB_DIR, 'SKILL.md')
+
+HUB_DESC = (
+    '全部 skills 的总索引与路由（master index & router for all local skills）。'
+    '当用户问「有哪些 skill」「能做什么」「该用哪个 skill」、任务跨领域需要选型、'
+    '或不确定从哪开始时使用。Triggers: 有什么skill / 用哪个skill / skill 列表 / '
+    'which skill / list skills / what can you do.'
+)
+
+# 常见任务 → skill 速查（想补充就加一行）
+HUB_SCENARIOS = [
+    ('做网页 / 前端界面 / 落地页', '`frontend-design`、`web-artifacts-builder`'),
+    ('做海报 / 封面 / 视觉作品', '`canvas-design`、`algorithmic-art`'),
+    ('统一设计风格 / 品牌规范', '`brand-guidelines`、`theme-factory`'),
+    ('写 Office 文档（Word / Excel / PPT / PDF）', '`docx`、`xlsx`、`pptx`、`pdf`'),
+    ('写技术文档 / 提案 / 对外沟通', '`doc-coauthoring`、`internal-comms`、`receipts`'),
+    ('从零开发一个功能（完整流程）',
+     '`brainstorming` → `writing-plans` → `test-driven-development` → `executing-plans` → `verification-before-completion`'),
+    ('排查疑难 bug', '`systematic-debugging`'),
+    ('代码审查 / 收到审查意见', '`requesting-code-review`、`receiving-code-review`'),
+    ('快速看懂一个项目 / 代码库', '`graphify`'),
+    ('写新 skill / 审查 skill 质量', '`skill-forge`、`skill-review`、`skill-creator`、`writing-skills`'),
+    ('做 MCP 服务 / 插件 / 命令 / Hook',
+     '`mcp-builder`、`build-mcp-server`、`build-mcp-app`、`plugin-structure`、`command-development`、`hook-development`'),
+    ('测试 Web 应用', '`webapp-testing`'),
+    ('多智能体并行 / 拆分复杂任务', '`dispatching-parallel-agents`、`subagent-driven-development`'),
+    ('查 Claude API（模型 / 价格 / 参数 / 迁移）', '`claude-api`'),
+    ('同步 / 备份 / 装回我的 skills', '`skill-sync`'),
+    ('做 GIF 动图', '`slack-gif-creator`'),
+]
+
+
+def build_hub(total: int, actual: set, zh: dict, others: list) -> list:
+    """把全部 skill 蒸馏成一份总索引 SKILL.md（内容随 skills/ 自动更新）。"""
+    L = []
+    A = L.append
+    A('---')
+    A('name: skills-hub')
+    A(f'description: "{HUB_DESC}"')
+    A('---')
+    A('')
+    A('# Skills Hub · 总索引')
+    A('')
+    A('> ⚙️ 本文件由 `scripts/gen-docs.py` 自动生成（上传时自动刷新），请勿手工编辑。')
+    A('')
+    A(f'**共 {total} 个 skill。** 找到目标后，用 `use_skill("<名称>")` 加载对应 skill。')
+    A('')
+    A('## 一、常见任务速查')
+    A('')
+    A('| 我想…… | 用这些 skill |')
+    A('|---|---|')
+    for task, names in HUB_SCENARIOS:
+        A(f'| {task} | {names} |')
+    A('')
+    A('## 二、按分类浏览')
+    A('')
+
+    def one(title: str, names: list):
+        members = [n for n in names if n in actual]
+        if not members:
+            return
+        A(f'### {title}')
+        A('')
+        A('| Skill | 什么时候用 |')
+        A('|---|---|')
+        for n in members:
+            d = (zh.get(n) or '').replace('|', r'\|').strip()
+            if len(d) > 100:
+                d = d[:100] + '…'
+            A(f'| `{n}` | {d} |')
+        A('')
+
+    for zh_title, _en_title, names in CATEGORIES:
+        one(zh_title, names)
+    one(OTHER_ZH, others)
+
+    A('## 三、使用建议')
+    A('')
+    A('1. 先查「速查表」，没有匹配再翻「分类表」；')
+    A('2. 找到后用 `use_skill("<名称>")` 加载，再按该 skill 的 SKILL.md 流程执行；')
+    A('3. 复杂任务可组合多个 skill（例如：`brainstorming` 对齐需求 → `writing-plans` 出计划 → `test-driven-development` 实现 → `verification-before-completion` 验收）。')
+    A('')
+    return L
+
+
 def main() -> int:
     if not os.path.isdir(SKILLS):
         print('✗ skills/ directory not found', file=sys.stderr)
         return 1
+
+    # skills-hub 由本脚本生成：先确保占位存在，让统计与文档包含它（内容随后重建）
+    os.makedirs(HUB_DIR, exist_ok=True)
+    if not os.path.isfile(HUB_PATH):
+        open(HUB_PATH, 'w', encoding='utf-8').write(
+            '---\nname: skills-hub\ndescription: placeholder\n---\n')
 
     zh = load_map(ZH_MAP)
     en = load_map(EN_MAP)
@@ -399,12 +493,16 @@ def main() -> int:
     open(zh_path, 'w', encoding='utf-8').write('\n'.join(build_zh(total, actual, zh, others)))
     open(en_path, 'w', encoding='utf-8').write('\n'.join(build_en(total, actual, en, others)))
 
+    # skills-hub：总索引 skill（随 skills/ 自动重建）
+    open(HUB_PATH, 'w', encoding='utf-8').write('\n'.join(build_hub(total, actual, zh, others)))
+
     # Missing translations (fallback to SKILL.md original was used)
     missing_zh = sorted(n for n in actual if not (zh.get(n) or '').strip())
     missing_en = sorted(n for n in actual if not (en.get(n) or '').strip())
 
     print(f'✓ {zh_path}  (Chinese, from descriptions.zh.json)')
     print(f'✓ {en_path}  (English, from descriptions.en.json)')
+    print(f'✓ {HUB_PATH}  (skills-hub, auto-generated)')
     print(f'  skills: {total}, categories: {len(CATEGORIES)}, other: {len(others)}')
     if others:
         print(f'  ℹ in "Other / 其他": {", ".join(others)}')

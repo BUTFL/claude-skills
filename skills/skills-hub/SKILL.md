@@ -1,29 +1,40 @@
-# claude-skills
-
-[English](README.en.md) | 简体中文
-
-我的 Claude Code / Codex skills 合集（共 **60 个**），支持一键安装、更新与备份。
-
-> 中文说明来自 `descriptions.zh.json`，英文说明来自 `descriptions.en.json`；两份 README 由 `scripts/gen-docs.py` 自动生成并保持同步。
-
+---
+name: skills-hub
+description: "全部 skills 的总索引与路由（master index & router for all local skills）。当用户问「有哪些 skill」「能做什么」「该用哪个 skill」、任务跨领域需要选型、或不确定从哪开始时使用。Triggers: 有什么skill / 用哪个skill / skill 列表 / which skill / list skills / what can you do."
 ---
 
-## 目录
+# Skills Hub · 总索引
 
-- [Skill 清单（60 个）](#skill-清单60-个)
-- [一键安装](#一键安装推荐)
-- [更新已有 skills](#更新已有-skills)
-- [反向同步（本机 → 仓库）](#本地新增-skill-后反向同步uploadsh)
-- [上传新 skill 前（强制流程）](#上传新-skill-前强制流程)
-- [用 AI 一键同步](#用-ai-一键同步skill-sync)
+> ⚙️ 本文件由 `scripts/gen-docs.py` 自动生成（上传时自动刷新），请勿手工编辑。
 
----
+**共 60 个 skill。** 找到目标后，用 `use_skill("<名称>")` 加载对应 skill。
 
-## Skill 清单（60 个）
+## 一、常见任务速查
 
-### 🎨 设计与视觉（7）
+| 我想…… | 用这些 skill |
+|---|---|
+| 做网页 / 前端界面 / 落地页 | `frontend-design`、`web-artifacts-builder` |
+| 做海报 / 封面 / 视觉作品 | `canvas-design`、`algorithmic-art` |
+| 统一设计风格 / 品牌规范 | `brand-guidelines`、`theme-factory` |
+| 写 Office 文档（Word / Excel / PPT / PDF） | `docx`、`xlsx`、`pptx`、`pdf` |
+| 写技术文档 / 提案 / 对外沟通 | `doc-coauthoring`、`internal-comms`、`receipts` |
+| 从零开发一个功能（完整流程） | `brainstorming` → `writing-plans` → `test-driven-development` → `executing-plans` → `verification-before-completion` |
+| 排查疑难 bug | `systematic-debugging` |
+| 代码审查 / 收到审查意见 | `requesting-code-review`、`receiving-code-review` |
+| 快速看懂一个项目 / 代码库 | `graphify` |
+| 写新 skill / 审查 skill 质量 | `skill-forge`、`skill-review`、`skill-creator`、`writing-skills` |
+| 做 MCP 服务 / 插件 / 命令 / Hook | `mcp-builder`、`build-mcp-server`、`build-mcp-app`、`plugin-structure`、`command-development`、`hook-development` |
+| 测试 Web 应用 | `webapp-testing` |
+| 多智能体并行 / 拆分复杂任务 | `dispatching-parallel-agents`、`subagent-driven-development` |
+| 查 Claude API（模型 / 价格 / 参数 / 迁移） | `claude-api` |
+| 同步 / 备份 / 装回我的 skills | `skill-sync` |
+| 做 GIF 动图 | `slack-gif-creator` |
 
-| Skill | 用途 |
+## 二、按分类浏览
+
+### 🎨 设计与视觉
+
+| Skill | 什么时候用 |
 |---|---|
 | `algorithmic-art` | 用 p5.js + 种子随机做生成艺术（流场、粒子、噪声），输出可交互的 HTML 作品。 |
 | `canvas-design` | 用设计方法论创作 .png / .pdf 视觉作品：海报、艺术图、静态设计稿。 |
@@ -33,9 +44,9 @@
 | `web-artifacts-builder` | 用现代前端技术栈构建复杂的多组件 claude.ai HTML artifact。 |
 | `slack-gif-creator` | 制作适配 Slack 的动图 GIF：尺寸约束、校验工具与优化建议。 |
 
-### 📄 办公文档（7）
+### 📄 办公文档
 
-| Skill | 用途 |
+| Skill | 什么时候用 |
 |---|---|
 | `docx` | 创建、读取、编辑 Word 文档（.docx/.dotx）：目录、页码、信头、图片、修订与批注。 |
 | `pdf` | 创建、读取与处理 PDF：抽取文本、合并拆分、表单填写、加解密。 |
@@ -45,9 +56,9 @@
 | `internal-comms` | 撰写内部沟通文案：周报、公告、FAQ、状态更新等对内文档。 |
 | `doc-coauthoring` | 结构化文档共创流程：高效传递上下文、迭代打磨、验证读者可用性。 |
 
-### 🛠 开发工程 / MCP（16）
+### 🛠 开发工程 / MCP
 
-| Skill | 用途 |
+| Skill | 什么时候用 |
 |---|---|
 | `claude-api` | Claude API / Anthropic SDK 权威参考：模型 ID、价格、参数、流式、工具调用、MCP、缓存与迁移。 |
 | `mcp-builder` | 构建高质量 MCP 服务器：工具设计、资源与提示词、认证与部署。 |
@@ -66,9 +77,9 @@
 | `webapp-testing` | 用 Playwright 测试本地 Web 应用：验证前端行为、填表单、截图与调试。 |
 | `math-olympiad` | 数学奥赛题解题：严谨推理、分步证明与答案验证。 |
 
-### 🔄 工作流与协作（13）
+### 🔄 工作流与协作
 
-| Skill | 用途 |
+| Skill | 什么时候用 |
 |---|---|
 | `brainstorming` | 任何创作开始前必用：先把需求、意图和设计聊清楚，再动手实现，避免方向做错。 |
 | `writing-plans` | 拿到多步任务的需求或规格后、动代码前，先写实施计划。 |
@@ -84,9 +95,9 @@
 | `finishing-a-development-branch` | 开发分支收尾：实现完成、测试通过后，决定如何合并与集成。 |
 | `using-superpowers` | 每次对话起始时建立「先查可用 skill 再回答」的工作方式。 |
 
-### 🤖 Claude Code 工具（15）
+### 🤖 Claude Code 工具
 
-| Skill | 用途 |
+| Skill | 什么时候用 |
 |---|---|
 | `graphify` | 把代码库、文档、图片等转成持久知识图谱，用于快速熟悉项目结构、查文件关系与架构。 |
 | `claude-automation-recommender` | 分析代码库并推荐 Claude Code 自动化方案（hooks、子代理、skills、插件、MCP）。 |
@@ -104,89 +115,15 @@
 | `example-command` | 示例斜杠命令，演示 frontmatter 选项与 skills 目录布局。 |
 | `example-skill` | 示例 skill，演示 skill 开发模式与标准模板结构。 |
 
-### 👤 个人（2）
+### 👤 个人
 
-| Skill | 用途 |
+| Skill | 什么时候用 |
 |---|---|
 | `skill-sync` | 从 GitHub 拉取并安装或更新我的个人 skills 合集（claude-skills 仓库）。 |
 | `skills-hub` | 全部 skills 的总索引与路由：按任务场景列出所有 skill 及用途，帮你快速定位该加载哪一个（问「用哪个 skill」先查它）。 |
 
----
+## 三、使用建议
 
-## 一键安装（推荐）
-
-> 本仓库是**公开**仓库，直接免 clone 一键安装：
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/BUTFL/claude-skills/main/install.sh | bash -s -- --target both
-```
-
-国内网络可用 **Gitee 镜像**（与 GitHub 自动同步）：
-
-```bash
-curl -fsSL https://gitee.com/BUTFL/claude-skills/raw/main/install.sh | bash -s -- --target both
-```
-
-或先克隆再安装：
-
-```bash
-git clone https://github.com/BUTFL/claude-skills.git
-cd claude-skills
-./install.sh --target both
-```
-
-## 更新已有 skills
-
-```bash
-cd claude-skills
-git pull
-./install.sh --target both --force
-```
-
-## 本地新增 skill 后反向同步（upload.sh）
-
-把本机 skills 收集回仓库（可选自动提交推送）：
-
-```bash
-./upload.sh --from claude          # 从 ~/.claude/skills 收集
-./upload.sh --pick                 # 交互选择要上传的 skill（可先选语言）
-./upload.sh --push                 # 直接推送到 main
-./upload.sh --pr                   # 走 Pull Request（描述自动中英双语）
-```
-
-用 `--push` / `--pr` 时，**提交信息、终端输出、PR 描述都会列出每个新增/更新 skill 的中英双语用途**，并自动同步两份 README。
-
-## 上传新 skill 前（强制流程）
-
-| 步骤 | 内容 |
-|---|---|
-| ① 符合格式 | 目录结构、`SKILL.md` frontmatter（`name` 必须与目录名一致），详见 [CONTRIBUTING.md](CONTRIBUTING.md) |
-| ② 校验全绿 | `./validate.sh` 必须输出 `✅ 全部检查通过` |
-| ③ code review | 由 AI 复核结构、双语说明与安全，通过后才允许提交 |
-| ④ 提交 | `./upload.sh --push` 或 `--pr`（内置校验，不通过会**拒绝提交**） |
-
-## 用 AI 一键同步（skill-sync）
-
-仓库内含 `skills/skill-sync`。装好后直接对 AI 说：
-
-> 同步我的 skills / 更新 skills / 恢复 skills
-
-它就会自动拉取本仓库并安装到位。
-
-## 说明
-
-| 参数 | 作用 |
-|---|---|
-| `--target claude` | 安装到 `~/.claude/skills`（默认） |
-| `--target codex` | 安装到 `~/.codex/skills` |
-| `--target codebuddy` | 安装到 `~/.codebuddy/skills` |
-| `--target both` | Claude Code + Codex |
-| `--target all` | 三个都装 |
-| `--force` | 覆盖已存在的同名 skill（默认跳过） |
-
-- 默认**跳过已存在**的 skill，不会误删你本地的其他 skill。
-- 装完需**重启对应工具**，新 skill 才会出现在可用列表。
-- 每个 skill 一个目录（含 `SKILL.md`），全部位于 `skills/` 下。
-- 中英文档由 `scripts/gen-docs.py` 自动生成，`upload.sh` 提交前自动同步；未归类的 skill 自动进入「其他」分类。
-- 不想上传的 skill 写进本地 `.skillignore`（详见 [CONTRIBUTING.md](CONTRIBUTING.md)）。
-- 本仓库自身（脚本与文档）以 **MIT** 许可发布；部分 skill 来自公开市场，遵循各自原许可证。
+1. 先查「速查表」，没有匹配再翻「分类表」；
+2. 找到后用 `use_skill("<名称>")` 加载，再按该 skill 的 SKILL.md 流程执行；
+3. 复杂任务可组合多个 skill（例如：`brainstorming` 对齐需求 → `writing-plans` 出计划 → `test-driven-development` 实现 → `verification-before-completion` 验收）。

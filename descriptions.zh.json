@@ -44,6 +44,7 @@
   "skill-forge": "创建高质量生产级 skill 的专家指南：skill 架构、工作流设计、提示词工程与打包，含 12 种实战技巧。",
   "skill-review": "审计 skill 自身的质量：结构、描述、工作流设计、token 效率与反模式，只给具体可执行的改法，不说空话（相当于 skill 的 lint）。",
   "skill-sync": "从 GitHub 拉取并安装或更新我的个人 skills 合集（claude-skills 仓库）。",
+  "skills-hub": "全部 skills 的总索引与路由：按任务场景列出所有 skill 及用途，帮你快速定位该加载哪一个（问「用哪个 skill」先查它）。",
   "slack-gif-creator": "制作适配 Slack 的动图 GIF：尺寸约束、校验工具与优化建议。",
   "subagent-driven-development": "在当前会话里用子代理执行实施计划中的独立任务。",
   "systematic-debugging": "遇到任何 bug、测试失败或异常行为时，先系统排查根因，再提修复方案。",

@@ -44,6 +44,7 @@
   "skill-forge": "Create high-quality, production-grade skills for Claude Code. Expert guidance on skill architecture, workflow design, prompt engineering, and packaging. Use when user wants to create a new skill, buil",
   "skill-review": "Quality review and audit for Claude Code skills. Analyzes skill structure, description quality, workflow design, token efficiency, and anti-patterns against best practices. Use when user wants to revi",
   "skill-sync": "Pull and install or update my personal skills collection from GitHub (the claude-skills repo). Use when the user says \"sync skills\", \"install my skills\", \"update skills\", \"restore skills\", or \"put all skills back\".",
+  "skills-hub": "Master index & router for all skills: lists every skill by task scenario so you can quickly find which one to load.",
   "slack-gif-creator": "Knowledge and utilities for creating animated GIFs optimized for Slack. Provides constraints, validation tools, and animation concepts. Use when users request animated GIFs for Slack like \"make me a G",
   "subagent-driven-development": "Use when executing implementation plans with independent tasks in the current session",
   "systematic-debugging": "Use when encountering any bug, test failure, or unexpected behavior, before proposing fixes",
