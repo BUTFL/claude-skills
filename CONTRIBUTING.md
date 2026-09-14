@@ -130,6 +130,25 @@ cp .skillignore.example .skillignore
 
 在 GitHub 网页手动开 PR 时，会自动套用 `.github/PULL_REQUEST_TEMPLATE.md`（中英双语检查清单）。
 
+## 双语说明（自动同步，无需打命令）
+
+每个 skill 的说明维护在两份映射文件中，**上传时自动同步**：
+
+| 文件 | 语言 | 用于 |
+|---|---|---|
+| `descriptions.zh.json` | 中文 | `README.md` 的「用途」列 |
+| `descriptions.en.json` | 英文 | `README.en.md` 的 What it does 列 |
+
+规则：
+
+- 你只写了**中文** → 英文由 AI 自动翻译，补进 `descriptions.en.json`
+- 你只写了**英文** → 中文由 AI 自动翻译，补进 `descriptions.zh.json`
+- 两边都缺 → 先回退 `SKILL.md` 原文，同时提示需要补齐
+
+`upload.sh` 上传时会**自动检测双向缺口**并列出待翻译的 skill，AI 补齐后再提交；两份 README 由 `scripts/gen-docs.py` 重新生成，始终保持一致。
+
+> **你不需要运行任何命令** —— 上传即同步，中文在前、英文在后（或反之）都会自动补全。
+
 ## 校验命令
 
 ```bash

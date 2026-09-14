@@ -134,6 +134,28 @@ Two ways to submit:
 When opening a PR manually on GitHub, `.github/PULL_REQUEST_TEMPLATE.md`
 (a bilingual checklist) is applied automatically.
 
+## Bilingual descriptions (synced automatically, no commands needed)
+
+Each skill's description lives in two map files, **synced automatically on upload**:
+
+| File | Language | Used for |
+|---|---|---|
+| `descriptions.zh.json` | Chinese | the 用途 column of `README.md` |
+| `descriptions.en.json` | English | the "What it does" column of `README.en.md` |
+
+Rules:
+
+- You wrote only **Chinese** → AI translates it into English and adds it to `descriptions.en.json`
+- You wrote only **English** → AI translates it into Chinese and adds it to `descriptions.zh.json`
+- Both missing → falls back to the `SKILL.md` original and warns that it needs filling in
+
+`upload.sh` **detects gaps in both directions** on every upload and lists the skills that
+need translating; the AI fills them in before committing, and `scripts/gen-docs.py` regenerates
+both READMEs so they stay in sync.
+
+> **You never run a command** — uploading is enough; Chinese-then-English (or the reverse)
+> is completed automatically.
+
 ## Validation
 
 ```bash
