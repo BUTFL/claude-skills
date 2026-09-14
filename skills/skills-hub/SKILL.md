@@ -7,7 +7,7 @@ description: "全部 skills 的总索引与路由（master index & router for al
 
 > ⚙️ 本文件由 `scripts/gen-docs.py` 自动生成（上传时自动刷新），请勿手工编辑。
 
-**共 8 个 skill。** 找到目标后，用 `use_skill("<名称>")` 加载对应 skill。
+**共 12 个 skill。** 找到目标后，用 `use_skill("<名称>")` 加载对应 skill。
 
 ## 一、常见任务速查
 
@@ -41,7 +41,11 @@ description: "全部 skills 的总索引与路由（master index & router for al
 |---|---|
 | `brainstorming` | 任何创作开始前必用：先把需求、意图和设计聊清楚，再动手实现，避免方向做错。 |
 | `writing-plans` | 拿到多步任务的需求或规格后、动代码前，先写实施计划。 |
+| `executing-plans` | 手上有书面实施计划时，按计划分步执行并在检查点复盘。 |
+| `test-driven-development` | 实现任何功能或修复前，先写测试定义成功标准（TDD）。 |
 | `systematic-debugging` | 遇到任何 bug、测试失败或异常行为时，先系统排查根因，再提修复方案。 |
+| `verification-before-completion` | 声称「完成 / 修好 / 通过」前必须实际运行验证命令并确认输出，禁止无证据下结论。 |
+| `requesting-code-review` | 任务完成、功能实现或合并前，发起代码评审以确认满足需求。 |
 
 ### 🤖 Claude Code 工具
 

@@ -1,10 +1,14 @@
 {
   "brainstorming": "任何创作开始前必用：先把需求、意图和设计聊清楚，再动手实现，避免方向做错。",
   "docx": "创建、读取、编辑 Word 文档（.docx/.dotx）：目录、页码、信头、图片、修订与批注。",
+  "executing-plans": "手上有书面实施计划时，按计划分步执行并在检查点复盘。",
   "frontend-design": "前端视觉设计指导：明确审美方向、字体与布局，做出不像「模板默认」的 UI。",
   "graphify": "把代码库、文档、图片等转成持久知识图谱，用于快速熟悉项目结构、查文件关系与架构。",
+  "requesting-code-review": "任务完成、功能实现或合并前，发起代码评审以确认满足需求。",
   "skill-sync": "从 GitHub 拉取并安装或更新我的个人 skills 合集（claude-skills 仓库）。",
   "skills-hub": "全部 skills 的总索引与路由：按任务场景列出所有 skill 及用途，帮你快速定位该加载哪一个（问「用哪个 skill」先查它）。",
   "systematic-debugging": "遇到任何 bug、测试失败或异常行为时，先系统排查根因，再提修复方案。",
+  "test-driven-development": "实现任何功能或修复前，先写测试定义成功标准（TDD）。",
+  "verification-before-completion": "声称「完成 / 修好 / 通过」前必须实际运行验证命令并确认输出，禁止无证据下结论。",
   "writing-plans": "拿到多步任务的需求或规格后、动代码前，先写实施计划。"
 }
