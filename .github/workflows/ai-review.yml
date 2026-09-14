@@ -1,0 +1,35 @@
+name: ai-review
+
+# 用 pull_request_target：即使是 fork 提交的 PR 也能拿到 Secrets（外部贡献者同样会被自动审核）。
+# 安全前提：本工作流只读取 diff 文本，绝不检出、更不执行 PR 里的代码。
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  review:
+    name: ai-review
+    runs-on: ubuntu-latest
+    steps:
+      # 默认检出 base 分支（安全：不执行 PR 代码），只为拿到审核脚本
+      - name: Checkout base
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: AI review PR diff
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AI_API_BASE: ${{ secrets.AI_API_BASE }}
+          AI_API_KEY: ${{ secrets.AI_API_KEY }}
+          AI_API_MODEL: ${{ secrets.AI_API_MODEL }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: python3 scripts/ai_review.py
