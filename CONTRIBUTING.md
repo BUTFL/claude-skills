@@ -13,10 +13,11 @@
       ↓
 ③ AI code review               ← 我人工过一遍，确认规范与安全
       ↓
-④ ./upload.sh --push           ← 前两步通过才允许提交
+④ ./upload.sh --push           ← 直接推送到 main
+   或 ./upload.sh --pr          ← 走 Pull Request（标题与描述自动中英双语）
 ```
 
-`upload.sh --push` **内置了 `validate.sh`**，校验不通过会直接中止提交，不会推到远程。
+`upload.sh --push` / `--pr` **都内置了 `validate.sh`**，校验不通过会直接中止，不会提交也不会建 PR。
 
 ## Skill 格式规范
 
@@ -110,6 +111,24 @@ cp .skillignore.example .skillignore
 
 > ⚠️ 注意：只在仓库里删掉某个 skill 是**没用的** —— 下次 `upload.sh` 还会从本机把它收回来。
 > 必须写进 `.skillignore`（或用上面两种方式）才会真正隐藏。
+
+## Pull Request 流程
+
+两种提交方式：
+
+| 方式 | 命令 | 适用 |
+|---|---|---|
+| 直接推送 | `./upload.sh --push` | 自己维护、快速同步 |
+| Pull Request | `./upload.sh --pr` | 多人协作、需要 review |
+
+`--pr` 会自动完成：
+
+1. 新建分支 `sync/日期-时间`
+2. 提交并推送该分支
+3. 创建 PR，**标题与描述自动中英双语**（分别列出新增 / 更新的 skill 及用途）
+4. 切回 `main`
+
+在 GitHub 网页手动开 PR 时，会自动套用 `.github/PULL_REQUEST_TEMPLATE.md`（中英双语检查清单）。
 
 ## 校验命令
 
