@@ -95,12 +95,21 @@ Say "upload xxx again" to remove it from the list.
 
 ### Option 3: edit `.skillignore` manually
 
-Repo root, one skill name per line, `#` starts a comment:
+`.skillignore` is a **local private file and is never uploaded** (it is listed in `.gitignore`;
+only `.skillignore.example` lives in the repo). One skill name per line, `#` starts a comment:
 
 ```
 # skills not uploaded
 add-tool-doc
 ```
+
+On first use (or after cloning someone else's repo), copy the template:
+
+```bash
+cp .skillignore.example .skillignore
+```
+
+> `upload.sh` also initializes it from the template automatically when missing.
 
 > ⚠️ Deleting a skill from the repo is **not enough** — the next `upload.sh` will
 > bring it back from your machine. Add it to `.skillignore` to hide it for real.
