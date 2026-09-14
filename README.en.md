@@ -118,6 +118,12 @@ My **Claude Code skills** collection (total **57**), with one-command install, u
 curl -fsSL https://raw.githubusercontent.com/BUTFL/claude-skills/main/install.sh | bash -s -- --target both
 ```
 
+A **Gitee mirror** (auto-synced from GitHub) is available for users in China:
+
+```bash
+curl -fsSL https://gitee.com/chen-fei-1241552681/claude-skills/raw/main/install.sh | bash -s -- --target both
+```
+
 Or clone first:
 
 ```bash

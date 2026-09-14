@@ -1,0 +1,30 @@
+name: mirror-to-gitee
+
+# 每次推送到 main，自动完整镜像到 Gitee（方便国内访问）。
+# Gitee 令牌存放在仓库 Secrets 中，日志里会被打码，不会泄露。
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  mirror:
+    name: mirror
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Push mirror to Gitee
+        env:
+          GITEE_USER: ${{ secrets.GITEE_USER }}
+          GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}
+        run: |
+          if [ -z "$GITEE_USER" ] || [ -z "$GITEE_TOKEN" ]; then
+            echo "未配置 GITEE_USER / GITEE_TOKEN，跳过镜像。"
+            exit 0
+          fi
+          git remote add gitee "https://${GITEE_USER}:${GITEE_TOKEN}@gitee.com/${GITEE_USER}/claude-skills.git"
+          git push --force --mirror gitee 2>&1 | sed "s/${GITEE_TOKEN}/***/g"
