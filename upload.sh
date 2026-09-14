@@ -579,8 +579,9 @@ if [ -n "$PUSH" ] || [ -n "$PR_MODE" ]; then
   else
     git add -A
     git -c user.name="$COMMIT_NAME" -c user.email="$COMMIT_EMAIL" commit -F "$msgfile"
-    git -c http.version=HTTP/1.1 push
-    msg "✓ 已提交并推送" "✓ committed and pushed"
+    # 必须显式指定 origin：否则会跟着分支的 upstream 走（Gitee 由 mirror 工作流负责，不在这里推）
+    git -c http.version=HTTP/1.1 push origin "$(git rev-parse --abbrev-ref HEAD)"
+    msg "✓ 已提交并推送到 GitHub" "✓ committed and pushed to GitHub"
 
     # 顺带同步仓库 About 描述里的 skill 数量（失败不影响主流程）
     if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
