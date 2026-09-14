@@ -207,5 +207,9 @@ cp .skillignore.example .skillignore
 
 - 只收录 **Claude Code 的 skill**，不收录 CodeBuddy 的（`upload.sh` 默认 `--from claude`）
 - 仓库是**公开**的：直接 `git clone` 或 `curl | bash` 安装，无需登录
-- **提交作者用你自己的 git 身份**（你的用户名 + 邮箱）。维护者本机的 `upload.sh` 会临时指定 `BUTFL@users.noreply.github.com`，与你无关，也不影响你的配置
+- **必须使用你自己的 GitHub 账号提交**：把你的 `user.name` / `user.email` 设成自己的
+  （`git config user.name "你的名字"` / `git config user.email "你的邮箱"`）。
+  **禁止冒用他人身份**——例如使用他人的邮箱或 `BUTFL@users.noreply.github.com`。
+  CI 会自动比对每个提交的归属账户与 PR 作者，不一致会在 PR 上醒目标注，这样的 PR 不会被合并。
+  （维护者本机的 `upload.sh` 会为**他自己的**提交临时指定 `BUTFL@users.noreply.github.com`，与贡献者无关。）
 - 遇到 push 报 `Failure when receiving data from the peer`，用 `git -c http.version=HTTP/1.1 push`

@@ -214,6 +214,12 @@ Before submitting, the AI verifies:
 
 - Only **Claude Code** skills are collected — not CodeBuddy ones (`upload.sh` defaults to `--from claude`)
 - The repo is **public**: `git clone` or `curl | bash` — no login required
-- **Commits use your own git identity** (your name + email). The maintainer's local `upload.sh` passes `BUTFL@users.noreply.github.com` explicitly for its own commits — that does not affect you or your config
+- **You must commit with your own GitHub account**: set your own `user.name` / `user.email`
+  (`git config user.name "Your Name"` / `git config user.email "you@example.com"`).
+  **Impersonating others is forbidden** — e.g. using someone else's email or
+  `BUTFL@users.noreply.github.com`. CI compares each commit's account with the PR author;
+  mismatches are flagged on the PR and such PRs will not be merged.
+  (The maintainer's local `upload.sh` only passes `BUTFL@users.noreply.github.com` for **his own**
+  commits — it has nothing to do with contributors.)
 - If push fails with `Failure when receiving data from the peer`, use `git -c http.version=HTTP/1.1 push`
 - Regenerate **both** READMEs with `python3 scripts/gen-docs.py` (runs automatically on upload)
