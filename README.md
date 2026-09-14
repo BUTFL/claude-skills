@@ -4,7 +4,7 @@
 
 我的 Claude Code skills 合集（共 **57 个**），支持一键安装、更新与备份。
 
-> 中文说明的单一来源是 `descriptions.zh.json`，脚本输出与提交信息都会优先读它。
+> 中文说明来自 `descriptions.zh.json`，英文说明来自 `descriptions.en.json`；两份 README 由 `scripts/gen-docs.py` 自动生成并保持同步。
 
 ---
 
@@ -112,20 +112,13 @@
 
 ## 一键安装（推荐）
 
-> 本仓库是**私有**仓库，用 `gh`（保持登录）拉取最省事：
-
-```bash
-gh repo clone BUTFL/claude-skills /tmp/claude-skills \
-  && /tmp/claude-skills/install.sh --target both
-```
-
-> 若把仓库改成 **public**，可免 clone 直接运行：
+> 本仓库是**公开**仓库，直接免 clone 一键安装：
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/BUTFL/claude-skills/main/install.sh | bash -s -- --target both
 ```
 
-## 本地安装
+或先克隆再安装：
 
 ```bash
 git clone https://github.com/BUTFL/claude-skills.git
@@ -147,35 +140,21 @@ git pull
 
 ```bash
 ./upload.sh --from claude          # 从 ~/.claude/skills 收集
-./upload.sh --from both --push     # 两边都收集并自动推送
-./upload.sh --dry-run              # 只预览，不写入
-./upload.sh --prune --push         # 同时删除仓库里本机已不存在的（谨慎）
+./upload.sh --pick                 # 交互选择要上传的 skill（可先选语言）
+./upload.sh --push                 # 直接推送到 main
+./upload.sh --pr                   # 走 Pull Request（描述自动中英双语）
 ```
 
-用 `--push` 提交时，**提交信息与终端输出都会列出每个新增/更新 skill 的中文用途**以及提交日期，形如：
-
-    skills 更新（2026-09-14）
-
-    新增 1 个：
-    - my-skill：这个 skill 用来做某件事
-
-    提交时间：2026-09-14 12:34
-
-> 新 skill 若还没写中文说明，脚本会提示你补进 `descriptions.zh.json`。
+用 `--push` / `--pr` 时，**提交信息、终端输出、PR 描述都会列出每个新增/更新 skill 的中英双语用途**，并自动同步两份 README。
 
 ## 上传新 skill 前（强制流程）
 
 | 步骤 | 内容 |
 |---|---|
-| ① 符合格式 | 目录结构、`SKILL.md` frontmatter（`name` 必须与目录名一致）、中文说明，详见 [CONTRIBUTING.md](CONTRIBUTING.md) |
+| ① 符合格式 | 目录结构、`SKILL.md` frontmatter（`name` 必须与目录名一致），详见 [CONTRIBUTING.md](CONTRIBUTING.md) |
 | ② 校验全绿 | `./validate.sh` 必须输出 `✅ 全部检查通过` |
-| ③ code review | 由 AI 复核结构、中文说明与安全，通过后才允许提交 |
-| ④ 提交 | `./upload.sh --push`（内置校验，不通过会**拒绝提交**） |
-
-```bash
-./validate.sh        # 7 大类检查：结构 / 命名 / frontmatter / 中文说明 / 安全 / 杂项 / 双语文档
-./upload.sh --push   # 校验通过才提交推送（自动同步中英文档）
-```
+| ③ code review | 由 AI 复核结构、双语说明与安全，通过后才允许提交 |
+| ④ 提交 | `./upload.sh --push` 或 `--pr`（内置校验，不通过会**拒绝提交**） |
 
 ## 用 AI 一键同步（skill-sync）
 
@@ -197,5 +176,5 @@ git pull
 - 默认**跳过已存在**的 skill，不会误删你本地的其他 skill。
 - 装完需**重启对应工具**，新 skill 才会出现在可用列表。
 - 每个 skill 一个目录（含 `SKILL.md`），全部位于 `skills/` 下。
-- 中英文档由 `scripts/gen-docs.py` 自动生成，`upload.sh` 提交前会自动同步；未归类的 skill 自动进入「其他」分类。
-- 私有仓库拉取需要 `gh auth login` 或已配置的 git 凭据。
+- 中英文档由 `scripts/gen-docs.py` 自动生成，`upload.sh` 提交前自动同步；未归类的 skill 自动进入「其他」分类。
+- 不想上传的 skill 写进本地 `.skillignore`（详见 [CONTRIBUTING.md](CONTRIBUTING.md)）。

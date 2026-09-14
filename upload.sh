@@ -19,6 +19,7 @@ set -euo pipefail
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 DEST="$REPO_DIR/skills"
 ZH_MAP="$REPO_DIR/descriptions.zh.json"
+EN_MAP="$REPO_DIR/descriptions.en.json"
 IGNORE_FILE="$REPO_DIR/.skillignore"
 FROM="claude"
 PUSH=""
@@ -132,9 +133,12 @@ print(raw()[:200])
 PY
 }
 
-# 检查某 skill 是否已有中文说明
+# 检查某 skill 是否已有对应语言的说明
 has_zh() {
   python3 -c "import json,sys; d=json.load(open(sys.argv[1],encoding='utf-8')); sys.exit(0 if (d.get(sys.argv[2]) or '').strip() else 1)" "$ZH_MAP" "$1" 2>/dev/null
+}
+has_en() {
+  python3 -c "import json,sys; d=json.load(open(sys.argv[1],encoding='utf-8')); sys.exit(0 if (d.get(sys.argv[2]) or '').strip() else 1)" "$EN_MAP" "$1" 2>/dev/null
 }
 
 mkdir -p "$DEST"
@@ -347,21 +351,27 @@ else
   echo "新增 $added 个，更新 $updated 个，移除 $removed 个"
 fi
 
-# 提示缺少中文说明的 skill
-missing=""
-if [ ${#ADD_LIST[@]} -gt 0 ]; then
-  for n in "${ADD_LIST[@]}"; do
-    has_zh "$n" || missing="$missing $n"
+# 双语说明缺口检测：缺哪边就提示补哪边（由 AI 自动翻译补齐，用户无需操作）
+miss_zh=""
+miss_en=""
+changed_all=()
+if [ ${#ADD_LIST[@]} -gt 0 ]; then changed_all+=("${ADD_LIST[@]}"); fi
+if [ ${#UPD_LIST[@]} -gt 0 ]; then changed_all+=("${UPD_LIST[@]}"); fi
+if [ ${#changed_all[@]} -gt 0 ]; then
+  for n in "${changed_all[@]}"; do
+    has_zh "$n" || miss_zh="$miss_zh $n"
+    has_en "$n" || miss_en="$miss_en $n"
   done
 fi
-if [ ${#UPD_LIST[@]} -gt 0 ]; then
-  for n in "${UPD_LIST[@]}"; do
-    has_zh "$n" || missing="$missing $n"
-  done
+if [ -n "$miss_zh" ]; then
+  msg "⚠️ 以下 skill 缺少中文说明（已回退原文），将由 AI 自动翻译补进 descriptions.zh.json：" \
+      "⚠️ missing Chinese description (used original), AI will translate into descriptions.zh.json:"
+  echo "  $miss_zh"
 fi
-if [ -n "$missing" ] && [ "$LANG_MODE" != "en" ]; then
-  echo "⚠️ 以下 skill 还没有中文说明，已回退显示原文，建议补进 descriptions.zh.json："
-  echo "  $missing"
+if [ -n "$miss_en" ]; then
+  msg "⚠️ 以下 skill 缺少英文说明（已回退原文），将由 AI 自动翻译补进 descriptions.en.json：" \
+      "⚠️ missing English description (used original), AI will translate into descriptions.en.json:"
+  echo "  $miss_en"
 fi
 
 if [ -n "$DRY" ]; then

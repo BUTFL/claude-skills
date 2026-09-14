@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
-"""Generate both READMEs (Chinese + English) from the single source of truth.
+"""Generate both READMEs from two description maps (single source of truth per language).
 
-- Chinese README  (README.md)     ← descriptions from `descriptions.zh.json`
-- English README  (README.en.md)  ← `description` field of each `skills/<name>/SKILL.md`
+- Chinese README  (README.md)     ← descriptions.zh.json
+- English README  (README.en.md)  ← descriptions.en.json
 
-Skills that are not listed in CATEGORIES automatically fall into a trailing
-"Other / 其他" section, so a newly added skill always shows up in both docs.
+If a skill is missing from the map for one language, the original `description`
+of its SKILL.md is used as a fallback, and a warning tells you which entries
+still need translating. Unlisted skills go to a trailing "Other / 其他" section.
 
 Usage:
     python3 scripts/gen-docs.py
 
 Run automatically by `upload.sh` before committing, so both documents always
-stay in sync with the skills (and with each other).
+stay in sync — and each language always has content.
 """
 import json
 import os
@@ -21,6 +22,7 @@ import sys
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SKILLS = os.path.join(REPO, 'skills')
 ZH_MAP = os.path.join(REPO, 'descriptions.zh.json')
+EN_MAP = os.path.join(REPO, 'descriptions.en.json')
 
 # (zh title, en title, [skill names]) — anything not listed goes to "Other / 其他"
 CATEGORIES = [
@@ -60,7 +62,7 @@ OTHER_EN = "📦 Other"
 
 
 def raw_description(name: str) -> str:
-    """Read the original (English) description from a skill's SKILL.md."""
+    """Read the original description from a skill's SKILL.md (fallback)."""
     path = os.path.join(SKILLS, name, 'SKILL.md')
     if not os.path.isfile(path):
         return ''
@@ -86,12 +88,12 @@ def raw_description(name: str) -> str:
                 else:
                     break
         val = ' '.join(x for x in buf if x)
-    return re.sub(r'\s+', ' ', val).strip().strip('"\'')
+    return re.sub(r'\s+', ' ', val).strip().strip('"\'"')
 
 
-def zh_description(name: str, zh: dict) -> str:
-    """Chinese description from descriptions.zh.json (falls back to the original)."""
-    v = (zh.get(name) or '').strip()
+def desc_of(name: str, m: dict) -> str:
+    """Description for one language: map first, SKILL.md original as fallback."""
+    v = (m.get(name) or '').strip()
     return v if v else raw_description(name)
 
 
@@ -111,7 +113,8 @@ def build_zh(total: int, actual: set, zh: dict, others: list) -> list:
     A('')
     A(f'我的 Claude Code skills 合集（共 **{total} 个**），支持一键安装、更新与备份。')
     A('')
-    A('> 中文说明的单一来源是 `descriptions.zh.json`，脚本输出与提交信息都会优先读它。')
+    A('> 中文说明来自 `descriptions.zh.json`，英文说明来自 `descriptions.en.json`；'
+      '两份 README 由 `scripts/gen-docs.py` 自动生成并保持同步。')
     A('')
     A('---')
     A('')
@@ -137,7 +140,7 @@ def build_zh(total: int, actual: set, zh: dict, others: list) -> list:
         A('| Skill | 用途 |')
         A('|---|---|')
         for n in names:
-            A(f'| `{n}` | {esc(zh_description(n, zh))} |')
+            A(f'| `{n}` | {esc(desc_of(n, zh))} |')
         A('')
     if others:
         A(f'### {OTHER_ZH}（{len(others)}）')
@@ -145,26 +148,19 @@ def build_zh(total: int, actual: set, zh: dict, others: list) -> list:
         A('| Skill | 用途 |')
         A('|---|---|')
         for n in others:
-            A(f'| `{n}` | {esc(zh_description(n, zh))} |')
+            A(f'| `{n}` | {esc(desc_of(n, zh))} |')
         A('')
     A('---')
     A('')
     A('## 一键安装（推荐）')
     A('')
-    A('> 本仓库是**私有**仓库，用 `gh`（保持登录）拉取最省事：')
-    A('')
-    A('```bash')
-    A('gh repo clone BUTFL/claude-skills /tmp/claude-skills \\')
-    A('  && /tmp/claude-skills/install.sh --target both')
-    A('```')
-    A('')
-    A('> 若把仓库改成 **public**，可免 clone 直接运行：')
+    A('> 本仓库是**公开**仓库，直接免 clone 一键安装：')
     A('')
     A('```bash')
     A('curl -fsSL https://raw.githubusercontent.com/BUTFL/claude-skills/main/install.sh | bash -s -- --target both')
     A('```')
     A('')
-    A('## 本地安装')
+    A('或先克隆再安装：')
     A('')
     A('```bash')
     A('git clone https://github.com/BUTFL/claude-skills.git')
@@ -186,35 +182,22 @@ def build_zh(total: int, actual: set, zh: dict, others: list) -> list:
     A('')
     A('```bash')
     A('./upload.sh --from claude          # 从 ~/.claude/skills 收集')
-    A('./upload.sh --from both --push     # 两边都收集并自动推送')
-    A('./upload.sh --dry-run              # 只预览，不写入')
-    A('./upload.sh --prune --push         # 同时删除仓库里本机已不存在的（谨慎）')
+    A('./upload.sh --pick                 # 交互选择要上传的 skill（可先选语言）')
+    A('./upload.sh --push                 # 直接推送到 main')
+    A('./upload.sh --pr                   # 走 Pull Request（描述自动中英双语）')
     A('```')
     A('')
-    A('用 `--push` 提交时，**提交信息与终端输出都会列出每个新增/更新 skill 的中文用途**以及提交日期，形如：')
-    A('')
-    A('    skills 更新（2026-09-14）')
-    A('')
-    A('    新增 1 个：')
-    A('    - my-skill：这个 skill 用来做某件事')
-    A('')
-    A('    提交时间：2026-09-14 12:34')
-    A('')
-    A('> 新 skill 若还没写中文说明，脚本会提示你补进 `descriptions.zh.json`。')
+    A('用 `--push` / `--pr` 时，**提交信息、终端输出、PR 描述都会列出每个新增/更新 skill 的中英双语用途**，'
+      '并自动同步两份 README。')
     A('')
     A('## 上传新 skill 前（强制流程）')
     A('')
     A('| 步骤 | 内容 |')
     A('|---|---|')
-    A('| ① 符合格式 | 目录结构、`SKILL.md` frontmatter（`name` 必须与目录名一致）、中文说明，详见 [CONTRIBUTING.md](CONTRIBUTING.md) |')
+    A('| ① 符合格式 | 目录结构、`SKILL.md` frontmatter（`name` 必须与目录名一致），详见 [CONTRIBUTING.md](CONTRIBUTING.md) |')
     A('| ② 校验全绿 | `./validate.sh` 必须输出 `✅ 全部检查通过` |')
-    A('| ③ code review | 由 AI 复核结构、中文说明与安全，通过后才允许提交 |')
-    A('| ④ 提交 | `./upload.sh --push`（内置校验，不通过会**拒绝提交**） |')
-    A('')
-    A('```bash')
-    A('./validate.sh        # 7 大类检查：结构 / 命名 / frontmatter / 中文说明 / 安全 / 杂项 / 双语文档')
-    A('./upload.sh --push   # 校验通过才提交推送（自动同步中英文档）')
-    A('```')
+    A('| ③ code review | 由 AI 复核结构、双语说明与安全，通过后才允许提交 |')
+    A('| ④ 提交 | `./upload.sh --push` 或 `--pr`（内置校验，不通过会**拒绝提交**） |')
     A('')
     A('## 用 AI 一键同步（skill-sync）')
     A('')
@@ -236,13 +219,14 @@ def build_zh(total: int, actual: set, zh: dict, others: list) -> list:
     A('- 默认**跳过已存在**的 skill，不会误删你本地的其他 skill。')
     A('- 装完需**重启对应工具**，新 skill 才会出现在可用列表。')
     A('- 每个 skill 一个目录（含 `SKILL.md`），全部位于 `skills/` 下。')
-    A('- 中英文档由 `scripts/gen-docs.py` 自动生成，`upload.sh` 提交前会自动同步；未归类的 skill 自动进入「其他」分类。')
-    A('- 私有仓库拉取需要 `gh auth login` 或已配置的 git 凭据。')
+    A('- 中英文档由 `scripts/gen-docs.py` 自动生成，`upload.sh` 提交前自动同步；'
+      '未归类的 skill 自动进入「其他」分类。')
+    A('- 不想上传的 skill 写进本地 `.skillignore`（详见 [CONTRIBUTING.md](CONTRIBUTING.md)）。')
     A('')
     return L
 
 
-def build_en(total: int, actual: set, others: list) -> list:
+def build_en(total: int, actual: set, en: dict, others: list) -> list:
     L = []
     A = L.append
     A('# claude-skills')
@@ -252,8 +236,8 @@ def build_en(total: int, actual: set, others: list) -> list:
     A(f'My **Claude Code skills** collection (total **{total}**), with one-command '
       'install, update and backup.')
     A('')
-    A('> Both READMEs are generated by `scripts/gen-docs.py` and kept in sync automatically '
-      'on every upload.')
+    A('> Chinese descriptions come from `descriptions.zh.json`, English ones from '
+      '`descriptions.en.json`; both READMEs are generated by `scripts/gen-docs.py` and stay in sync.')
     A('')
     A('---')
     A('')
@@ -279,7 +263,7 @@ def build_en(total: int, actual: set, others: list) -> list:
         A('| Skill | What it does |')
         A('|---|---|')
         for n in names:
-            A(f'| `{n}` | {esc(raw_description(n))} |')
+            A(f'| `{n}` | {esc(desc_of(n, en))} |')
         A('')
     if others:
         A(f'### {OTHER_EN} ({len(others)})')
@@ -287,26 +271,19 @@ def build_en(total: int, actual: set, others: list) -> list:
         A('| Skill | What it does |')
         A('|---|---|')
         for n in others:
-            A(f'| `{n}` | {esc(raw_description(n))} |')
+            A(f'| `{n}` | {esc(desc_of(n, en))} |')
         A('')
     A('---')
     A('')
     A('## One-line install (recommended)')
     A('')
-    A('> This is a **private** repo — cloning with `gh` (logged in) is the easiest way:')
-    A('')
-    A('```bash')
-    A('gh repo clone BUTFL/claude-skills /tmp/claude-skills \\')
-    A('  && /tmp/claude-skills/install.sh --target both')
-    A('```')
-    A('')
-    A('> If the repo is **public**, you can run it without cloning:')
+    A('> This is a **public** repo — install without cloning:')
     A('')
     A('```bash')
     A('curl -fsSL https://raw.githubusercontent.com/BUTFL/claude-skills/main/install.sh | bash -s -- --target both')
     A('```')
     A('')
-    A('## Local install')
+    A('Or clone first:')
     A('')
     A('```bash')
     A('git clone https://github.com/BUTFL/claude-skills.git')
@@ -328,10 +305,13 @@ def build_en(total: int, actual: set, others: list) -> list:
     A('')
     A('```bash')
     A('./upload.sh --from claude          # collect from ~/.claude/skills')
-    A('./upload.sh --from both --push     # collect from both and push')
-    A('./upload.sh --dry-run              # preview only, no writes')
-    A('./upload.sh --prune --push         # also delete skills missing locally (use with care)')
+    A('./upload.sh --pick                 # interactively choose skills (language first)')
+    A('./upload.sh --push                 # push directly to main')
+    A('./upload.sh --pr                   # open a Pull Request (bilingual body)')
     A('```')
+    A('')
+    A('With `--push` / `--pr`, the **commit message, terminal output and PR body list every '
+      'added/updated skill in both Chinese and English**, and both READMEs are synced automatically.')
     A('')
     A('## Before uploading (mandatory)')
     A('')
@@ -339,13 +319,8 @@ def build_en(total: int, actual: set, others: list) -> list:
     A('|---|---|')
     A('| ① Format | Follow [CONTRIBUTING.en.md](CONTRIBUTING.en.md) |')
     A('| ② Validation green | `./validate.sh` must print `All checks passed` |')
-    A('| ③ Code review | AI reviews structure, descriptions and security |')
-    A('| ④ Submit | `./upload.sh --push` (validation runs automatically and **blocks** on failure) |')
-    A('')
-    A('```bash')
-    A('./validate.sh        # 7 checks: structure / naming / frontmatter / descriptions / security / misc / bilingual docs')
-    A('./upload.sh --push   # commits and pushes only when validation passes (docs sync automatically)')
-    A('```')
+    A('| ③ Code review | AI reviews structure, bilingual descriptions and security |')
+    A('| ④ Submit | `./upload.sh --push` or `--pr` (validation runs automatically and **blocks** on failure) |')
     A('')
     A('## Sync with AI (skill-sync)')
     A('')
@@ -369,9 +344,18 @@ def build_en(total: int, actual: set, others: list) -> list:
     A('- One directory per skill (containing `SKILL.md`), all under `skills/`.')
     A('- Both READMEs are generated by `scripts/gen-docs.py`; `upload.sh` syncs them before '
       'committing. Uncategorized skills land in the "Other" section automatically.')
-    A('- Pulling a private repo requires `gh auth login` or configured git credentials.')
+    A('- Skills you do not want to upload go into your local `.skillignore` '
+      '(see [CONTRIBUTING.en.md](CONTRIBUTING.en.md)).')
     A('')
     return L
+
+
+def load_map(path: str) -> dict:
+    try:
+        return json.load(open(path, encoding='utf-8'))
+    except Exception as e:
+        print(f'✗ cannot read {path}: {e}', file=sys.stderr)
+        return {}
 
 
 def main() -> int:
@@ -379,11 +363,8 @@ def main() -> int:
         print('✗ skills/ directory not found', file=sys.stderr)
         return 1
 
-    try:
-        zh = json.load(open(ZH_MAP, encoding='utf-8'))
-    except Exception as e:
-        print(f'✗ cannot read {ZH_MAP}: {e}', file=sys.stderr)
-        return 1
+    zh = load_map(ZH_MAP)
+    en = load_map(EN_MAP)
 
     listed = {n for _z, _e, names in CATEGORIES for n in names}
     actual = {d for d in os.listdir(SKILLS)
@@ -396,13 +377,21 @@ def main() -> int:
     zh_path = os.path.join(REPO, 'README.md')
     en_path = os.path.join(REPO, 'README.en.md')
     open(zh_path, 'w', encoding='utf-8').write('\n'.join(build_zh(total, actual, zh, others)))
-    open(en_path, 'w', encoding='utf-8').write('\n'.join(build_en(total, actual, others)))
+    open(en_path, 'w', encoding='utf-8').write('\n'.join(build_en(total, actual, en, others)))
+
+    # Missing translations (fallback to SKILL.md original was used)
+    missing_zh = sorted(n for n in actual if not (zh.get(n) or '').strip())
+    missing_en = sorted(n for n in actual if not (en.get(n) or '').strip())
 
     print(f'✓ {zh_path}  (Chinese, from descriptions.zh.json)')
-    print(f'✓ {en_path}  (English, from SKILL.md)')
+    print(f'✓ {en_path}  (English, from descriptions.en.json)')
     print(f'  skills: {total}, categories: {len(CATEGORIES)}, other: {len(others)}')
     if others:
         print(f'  ℹ in "Other / 其他": {", ".join(others)}')
+    if missing_zh:
+        print(f'  ⚠ missing Chinese description (needs translating): {", ".join(missing_zh)}')
+    if missing_en:
+        print(f'  ⚠ missing English description (needs translating): {", ".join(missing_en)}')
     return 0
 
 
