@@ -178,3 +178,4 @@ git pull
 - 每个 skill 一个目录（含 `SKILL.md`），全部位于 `skills/` 下。
 - 中英文档由 `scripts/gen-docs.py` 自动生成，`upload.sh` 提交前自动同步；未归类的 skill 自动进入「其他」分类。
 - 不想上传的 skill 写进本地 `.skillignore`（详见 [CONTRIBUTING.md](CONTRIBUTING.md)）。
+- 本仓库自身（脚本与文档）以 **MIT** 许可发布；部分 skill 来自公开市场，遵循各自原许可证。

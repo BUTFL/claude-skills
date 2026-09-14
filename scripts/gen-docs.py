@@ -222,6 +222,7 @@ def build_zh(total: int, actual: set, zh: dict, others: list) -> list:
     A('- 中英文档由 `scripts/gen-docs.py` 自动生成，`upload.sh` 提交前自动同步；'
       '未归类的 skill 自动进入「其他」分类。')
     A('- 不想上传的 skill 写进本地 `.skillignore`（详见 [CONTRIBUTING.md](CONTRIBUTING.md)）。')
+    A('- 本仓库自身（脚本与文档）以 **MIT** 许可发布；部分 skill 来自公开市场，遵循各自原许可证。')
     A('')
     return L
 
@@ -346,6 +347,8 @@ def build_en(total: int, actual: set, en: dict, others: list) -> list:
       'committing. Uncategorized skills land in the "Other" section automatically.')
     A('- Skills you do not want to upload go into your local `.skillignore` '
       '(see [CONTRIBUTING.en.md](CONTRIBUTING.en.md)).')
+    A('- The repo itself (scripts and docs) is **MIT** licensed; some skills come from public '
+      'marketplaces and keep their original licenses.')
     A('')
     return L
 
