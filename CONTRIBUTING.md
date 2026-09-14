@@ -92,12 +92,21 @@ description: <一句话用途>   # 必填
 
 ### 方式三：手动编辑 `.skillignore`
 
-仓库根目录，每行一个 skill 名，`#` 开头为注释：
+`.skillignore` 是**本地私有文件，不会上传到仓库**（已在 `.gitignore` 中，仓库里只保留 `.skillignore.example` 模板）。
+每行一个 skill 名，`#` 开头为注释：
 
 ```
 # 不上传的 skill
 add-tool-doc
 ```
+
+首次使用（或克隆别人的仓库后），从示例复制一份即可：
+
+```bash
+cp .skillignore.example .skillignore
+```
+
+> `upload.sh` 检测到本地没有 `.skillignore` 时，也会自动从模板初始化。
 
 > ⚠️ 注意：只在仓库里删掉某个 skill 是**没用的** —— 下次 `upload.sh` 还会从本机把它收回来。
 > 必须写进 `.skillignore`（或用上面两种方式）才会真正隐藏。

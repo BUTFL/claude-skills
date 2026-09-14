@@ -1,0 +1,23 @@
+# ─────────────────────────────────────────────────────────────
+# 本地忽略名单 · 示例模板（Local ignore list · example template）
+# ─────────────────────────────────────────────────────────────
+#
+# 用法：复制为 .skillignore 后生效
+#   cp .skillignore.example .skillignore
+#
+# 说明：
+#   - .skillignore 是你的**本地私有**配置，不会被上传到仓库
+#     （已在 .gitignore 中，仓库里只有这份 .example 模板）
+#   - 每行一个 skill 名，# 开头为注释
+#   - 名单里的 skill 不会被 upload.sh 上传；若仓库中已存在会被移除
+#
+# Usage: copy this file to .skillignore first
+#   cp .skillignore.example .skillignore
+#
+#   - .skillignore is your LOCAL private config; it is never uploaded
+#     (listed in .gitignore; only this .example template lives in the repo)
+#   - One skill name per line; lines starting with # are comments
+#   - Skills listed here are skipped by upload.sh (and removed if present)
+#
+# 示例 / Example:
+# add-tool-doc

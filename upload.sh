@@ -66,6 +66,11 @@ src_dirs() {
   esac
 }
 
+# .skillignore 是本地私有文件（不上传）。缺失时自动从示例初始化。
+if [ ! -f "$IGNORE_FILE" ] && [ -f "$IGNORE_FILE.example" ]; then
+  cp "$IGNORE_FILE.example" "$IGNORE_FILE"
+fi
+
 # 判断 skill 是否在忽略名单中
 is_ignored() {
   local n="$1"
