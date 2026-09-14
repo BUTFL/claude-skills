@@ -50,6 +50,7 @@ CATEGORIES = [
         "graphify", "claude-automation-recommender", "claude-md-improver", "claude-security",
         "writing-rules", "session-report", "project-artifact", "playground",
         "discernment-nudge", "academy-guide", "karpathy-guidelines",
+        "skill-review", "skill-forge",
         "example-command", "example-skill",
     ]),
     ("👤 个人", "👤 Personal", [

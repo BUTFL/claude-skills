@@ -55,5 +55,7 @@
   "writing-plans": "Use when you have a spec or requirements for a multi-step task, before touching code",
   "writing-rules": "This skill should be used when the user asks to \"create a hookify rule\", \"write a hook rule\", \"configure hookify\", \"add a hookify rule\", or needs guidance on hookify rule syntax and patterns.",
   "writing-skills": "Use when creating new skills, editing existing skills, or verifying skills work before deployment",
-  "xlsx": "Use this skill any time a spreadsheet file is the primary input or output. This means any task where the user wants to: open, read, edit, or fix an existing .xlsx, .xlsm, .xltx, .csv, or .tsv file (e."
+  "xlsx": "Use this skill any time a spreadsheet file is the primary input or output. This means any task where the user wants to: open, read, edit, or fix an existing .xlsx, .xlsm, .xltx, .csv, or .tsv file (e.",
+  "skill-review": "Quality audit for Claude Code skills: structure, description quality, workflow design, token efficiency and anti-pattern detection, with specific actionable suggestions.",
+  "skill-forge": "Meta-skill for creating high-quality production-grade skills: architecture, workflow design, prompt engineering and packaging, with 12 battle-tested techniques."
 }
