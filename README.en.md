@@ -121,7 +121,7 @@ curl -fsSL https://raw.githubusercontent.com/BUTFL/claude-skills/main/install.sh
 A **Gitee mirror** (auto-synced from GitHub) is available for users in China:
 
 ```bash
-curl -fsSL https://gitee.com/chen-fei-1241552681/claude-skills/raw/main/install.sh | bash -s -- --target both
+curl -fsSL https://gitee.com/BUTFL/claude-skills/raw/main/install.sh | bash -s -- --target both
 ```
 
 Or clone first:

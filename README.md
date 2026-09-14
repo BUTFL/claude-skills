@@ -121,7 +121,7 @@ curl -fsSL https://raw.githubusercontent.com/BUTFL/claude-skills/main/install.sh
 国内网络可用 **Gitee 镜像**（与 GitHub 自动同步）：
 
 ```bash
-curl -fsSL https://gitee.com/chen-fei-1241552681/claude-skills/raw/main/install.sh | bash -s -- --target both
+curl -fsSL https://gitee.com/BUTFL/claude-skills/raw/main/install.sh | bash -s -- --target both
 ```
 
 或先克隆再安装：
