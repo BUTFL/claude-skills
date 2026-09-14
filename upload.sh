@@ -30,11 +30,13 @@ NO_DOCS=""
 PICK=""
 LANG_MODE=""
 PR_MODE=""
+NOTE_LIST=()
 
 while [ $# -gt 0 ]; do
   case "$1" in
     --from) FROM="${2:-claude}"; shift 2 ;;
     --lang) LANG_MODE="${2:-zh}"; shift 2 ;;
+    --note) NOTE_LIST+=("${2:-}"); shift 2 ;;
     --pick|-i) PICK=1; shift ;;
     --push) PUSH=1; shift ;;
     --pr) PR_MODE=1; shift ;;
@@ -43,7 +45,8 @@ while [ $# -gt 0 ]; do
     --no-docs) NO_DOCS=1; shift ;;
     --skip-check) SKIP_CHECK=1; shift ;;
     -h|--help)
-      echo "用法: upload.sh [--lang zh|en] [--pick] [--from claude|codebuddy|both] [--push|--pr] [--dry-run] [--prune] [--no-docs] [--skip-check]"
+      echo "用法: upload.sh [--lang zh|en] [--note \"说明\"] [--pick] [--from claude|codebuddy|both] [--push|--pr] [--dry-run] [--prune] [--no-docs] [--skip-check]"
+      echo "  --note  变更说明（可多次）：说明这次改了什么、为什么改，会写进提交信息/PR 描述"
       echo "  --push  校验通过后直接提交并推送到 main"
       echo "  --pr    校验通过后新建分支、推送并创建 Pull Request（描述自动中英双语）"
       exit 0 ;;
@@ -426,6 +429,11 @@ msgfile="$(mktemp)"
 {
   if [ "$LANG_MODE" = "en" ]; then
     echo "skills update ($TODAY)"
+    if [ ${#NOTE_LIST[@]} -gt 0 ]; then
+      echo ""
+      echo "Notes (what & why):"
+      for n in "${NOTE_LIST[@]}"; do echo "- $n"; done
+    fi
     if [ ${#ADD_LIST[@]} -gt 0 ]; then
       echo ""
       echo "Added ${#ADD_LIST[@]}:"
@@ -449,6 +457,11 @@ msgfile="$(mktemp)"
     echo "Committed at: $NOW"
   else
     echo "skills 更新（$TODAY）"
+    if [ ${#NOTE_LIST[@]} -gt 0 ]; then
+      echo ""
+      echo "变更说明（改了什么 / 为什么）："
+      for n in "${NOTE_LIST[@]}"; do echo "- $n"; done
+    fi
     if [ ${#ADD_LIST[@]} -gt 0 ]; then
       echo ""
       echo "新增 ${#ADD_LIST[@]} 个："
@@ -505,6 +518,11 @@ if [ -n "$PUSH" ] || [ -n "$PR_MODE" ]; then
     {
       echo "## 变更说明（中文）"
       echo ""
+      if [ ${#NOTE_LIST[@]} -gt 0 ]; then
+        echo "**改了什么 / 为什么：**"
+        for n in "${NOTE_LIST[@]}"; do echo "- $n"; done
+        echo ""
+      fi
       if [ ${#ADD_LIST[@]} -gt 0 ]; then
         echo "**新增 ${#ADD_LIST[@]} 个：**"
         for n in "${ADD_LIST[@]}"; do echo "- \`$n\`：$(skill_desc "$DEST/$n" zh)"; done
@@ -525,6 +543,11 @@ if [ -n "$PUSH" ] || [ -n "$PR_MODE" ]; then
       echo ""
       echo "## Summary (English)"
       echo ""
+      if [ ${#NOTE_LIST[@]} -gt 0 ]; then
+        echo "**What changed & why:**"
+        for n in "${NOTE_LIST[@]}"; do echo "- $n"; done
+        echo ""
+      fi
       if [ ${#ADD_LIST[@]} -gt 0 ]; then
         echo "**Added ${#ADD_LIST[@]}:**"
         for n in "${ADD_LIST[@]}"; do echo "- \`$n\`: $(skill_desc "$DEST/$n" en)"; done

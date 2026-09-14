@@ -134,6 +134,22 @@ Two ways to submit:
 When opening a PR manually on GitHub, `.github/PULL_REQUEST_TEMPLATE.md`
 (a bilingual checklist) is applied automatically.
 
+## State "what changed & why" in the commit (--note)
+
+Beyond the auto-generated skill list and file list, you can add **the reason for the change**:
+
+```bash
+./upload.sh --push \
+  --note "Add an 'other changes' section: scripts-only commits used to have an empty message" \
+  --note "Work around a bash 3.2 parsing quirk on macOS with case inside \$( )"
+```
+
+- `--note` can be repeated; it is written into the **commit message** and the **PR body** (both languages)
+- Notes are **written by the AI at submit time** — it understands the intent, so you never hand-write them
+- Without `--note`, behaviour is unchanged (the skill and file lists are still shown)
+
+> Why human/AI notes: scripts can list *which* files changed, but only a human (or AI) knows *why*.
+
 ## Bilingual descriptions (synced automatically, no commands needed)
 
 Each skill's description lives in two map files, **synced automatically on upload**:
