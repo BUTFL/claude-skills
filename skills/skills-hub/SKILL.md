@@ -125,5 +125,6 @@ description: "全部 skills 的总索引与路由（master index & router for al
 ## 三、使用建议
 
 1. 先查「速查表」，没有匹配再翻「分类表」；
-2. 找到后用 `use_skill("<名称>")` 加载，再按该 skill 的 SKILL.md 流程执行；
-3. 复杂任务可组合多个 skill（例如：`brainstorming` 对齐需求 → `writing-plans` 出计划 → `test-driven-development` 实现 → `verification-before-completion` 验收）。
+2. 找到后用 `use_skill("<名称>")` 加载对应 skill（推荐：原生触发、含脚本/模板等附属资源）；
+3. **只装本 skill 也能用**：同目录的 `ALL_SKILLS.md` 是全量合订本，包含所有 skill 的完整指令，按章节检索阅读即可（脚本/模板等附属资源仍需安装对应 skill）；
+4. 复杂任务可组合多个 skill（例如：`brainstorming` 对齐需求 → `writing-plans` 出计划 → `test-driven-development` 实现 → `verification-before-completion` 验收）。

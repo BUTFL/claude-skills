@@ -382,6 +382,7 @@ def load_map(path: str) -> dict:
 
 HUB_DIR = os.path.join(SKILLS, 'skills-hub')
 HUB_PATH = os.path.join(HUB_DIR, 'SKILL.md')
+HUB_BUNDLE_PATH = os.path.join(HUB_DIR, 'ALL_SKILLS.md')
 
 HUB_DESC = (
     '全部 skills 的总索引与路由（master index & router for all local skills）。'
@@ -411,6 +412,45 @@ HUB_SCENARIOS = [
     ('同步 / 备份 / 装回我的 skills', '`skill-sync`'),
     ('做 GIF 动图', '`slack-gif-creator`'),
 ]
+
+
+def build_bundle(actual: set, zh: dict) -> list:
+    """把全部 skill 的 SKILL.md 合并成单文件合订本，让 skills-hub 自包含全部指令。"""
+    L = []
+    A = L.append
+    names = sorted(actual)
+    A('# ALL SKILLS · 全量合订本')
+    A('')
+    A('> ⚙️ 本文件由 `scripts/gen-docs.py` 自动生成，收录全部 skill 的完整指令（不含脚本/模板等附属文件）。')
+    A('> 用法：先在「目录」定位 → 读对应章节 → 按其中流程执行；'
+      '需要附属资源时，安装该 skill 的独立目录（或直接读取其原目录）。')
+    A('')
+    A(f'**共 {len(names)} 个 skill。**')
+    A('')
+    A('## 目录')
+    A('')
+    for i, n in enumerate(names, 1):
+        d = (zh.get(n) or '').strip()
+        d = d[:80] + '…' if len(d) > 80 else d
+        A(f'{i}. [{n}](#{n}) — {d}')
+    A('')
+    A('---')
+    A('')
+    for n in names:
+        p = os.path.join(SKILLS, n, 'SKILL.md')
+        try:
+            text = open(p, encoding='utf-8').read()
+        except Exception:
+            continue
+        # 去掉 frontmatter（name/description 已在目录里）
+        text = re.sub(r'^---\s*\n.*?\n---\s*\n', '', text, count=1, flags=re.S)
+        A(f'## {n}')
+        A('')
+        A(text.strip())
+        A('')
+        A('---')
+        A('')
+    return L
 
 
 def build_hub(total: int, actual: set, zh: dict, others: list) -> list:
@@ -460,8 +500,10 @@ def build_hub(total: int, actual: set, zh: dict, others: list) -> list:
     A('## 三、使用建议')
     A('')
     A('1. 先查「速查表」，没有匹配再翻「分类表」；')
-    A('2. 找到后用 `use_skill("<名称>")` 加载，再按该 skill 的 SKILL.md 流程执行；')
-    A('3. 复杂任务可组合多个 skill（例如：`brainstorming` 对齐需求 → `writing-plans` 出计划 → `test-driven-development` 实现 → `verification-before-completion` 验收）。')
+    A('2. 找到后用 `use_skill("<名称>")` 加载对应 skill（推荐：原生触发、含脚本/模板等附属资源）；')
+    A('3. **只装本 skill 也能用**：同目录的 `ALL_SKILLS.md` 是全量合订本，包含所有 skill 的完整指令，'
+      '按章节检索阅读即可（脚本/模板等附属资源仍需安装对应 skill）；')
+    A('4. 复杂任务可组合多个 skill（例如：`brainstorming` 对齐需求 → `writing-plans` 出计划 → `test-driven-development` 实现 → `verification-before-completion` 验收）。')
     A('')
     return L
 
@@ -495,6 +537,8 @@ def main() -> int:
 
     # skills-hub：总索引 skill（随 skills/ 自动重建）
     open(HUB_PATH, 'w', encoding='utf-8').write('\n'.join(build_hub(total, actual, zh, others)))
+    # 全量合订本：让 skills-hub 自包含所有 skill 的完整指令
+    open(HUB_BUNDLE_PATH, 'w', encoding='utf-8').write('\n'.join(build_bundle(actual, zh)))
 
     # Missing translations (fallback to SKILL.md original was used)
     missing_zh = sorted(n for n in actual if not (zh.get(n) or '').strip())
@@ -503,6 +547,7 @@ def main() -> int:
     print(f'✓ {zh_path}  (Chinese, from descriptions.zh.json)')
     print(f'✓ {en_path}  (English, from descriptions.en.json)')
     print(f'✓ {HUB_PATH}  (skills-hub, auto-generated)')
+    print(f'✓ {HUB_BUNDLE_PATH}  (all-skills bundle)')
     print(f'  skills: {total}, categories: {len(CATEGORIES)}, other: {len(others)}')
     if others:
         print(f'  ℹ in "Other / 其他": {", ".join(others)}')
