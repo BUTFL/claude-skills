@@ -401,6 +401,27 @@ fi
 # 4) 生成提交信息（跟随所选语言）
 NOW="$(date '+%Y-%m-%d %H:%M')"
 TODAY="$(date '+%Y-%m-%d')"
+
+# 非 skill 的其他文件改动（脚本、文档、LICENSE 等）——避免"提交什么都不写"
+# 注意：case 必须写在函数体内。bash 3.2（macOS 自带）在 $( ) 命令替换内部
+# 直接写 case 时，会把模式里的 ")" 误解析为替换结束，导致语法错误。
+collect_other_changes() {
+  git status --porcelain | head -50 | while IFS= read -r line; do
+    st="${line:0:2}"
+    path="${line:3}"
+    case "$path" in skills/*) continue ;; esac
+    case "$st" in
+      M*|" M") t="修改"; te="modified" ;;
+      A*|"??") t="新增"; te="added" ;;
+      D*|" D") t="删除"; te="deleted" ;;
+      R*)      t="重命名"; te="renamed" ;;
+      *)       t="变更"; te="changed" ;;
+    esac
+    if [ "$LANG_MODE" = "en" ]; then echo "- [$te] $path"; else echo "- [$t] $path"; fi
+  done
+}
+other_out="$(collect_other_changes)"
+
 msgfile="$(mktemp)"
 {
   if [ "$LANG_MODE" = "en" ]; then
@@ -419,6 +440,11 @@ msgfile="$(mktemp)"
       echo ""
       echo "Removed $removed."
     fi
+    if [ -n "$other_out" ]; then
+      echo ""
+      echo "Other changes:"
+      echo "$other_out"
+    fi
     echo ""
     echo "Committed at: $NOW"
   else
@@ -436,6 +462,11 @@ msgfile="$(mktemp)"
     if [ "$removed" -gt 0 ]; then
       echo ""
       echo "移除 $removed 个。"
+    fi
+    if [ -n "$other_out" ]; then
+      echo ""
+      echo "其他改动："
+      echo "$other_out"
     fi
     echo ""
     echo "提交时间：$NOW"
