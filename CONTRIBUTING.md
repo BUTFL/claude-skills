@@ -149,6 +149,23 @@ cp .skillignore.example .skillignore
 
 > **你不需要运行任何命令** —— 上传即同步，中文在前、英文在后（或反之）都会自动补全。
 
+## 外部贡献流程（main 受保护，不能直推）
+
+`main` 分支已开启**分支保护**，任何人（包括贡献者）都**不能直接推送**：
+
+1. **Fork** 本仓库，在 fork 里按上面的格式与规范准备好 skill
+2. 向 `main` **开 Pull Request**
+   - 首次贡献者需要维护者点一次「Approve and run workflows」，CI 才会跑
+3. **CI 必须全绿** —— GitHub Actions 会自动执行：
+   - `scripts/gen-docs.py` 文档同步检查（README 没同步就红）
+   - `validate.sh` 全部 8 项校验
+4. **维护者 Approve** 后，PR 才能合并
+
+也就是说：**全绿 + 我同意 = 才能进主分支**，缺一不可。
+
+> 维护者（仓库所有者）保留直接推送权限（`enforce_admins = false`），用于日常快速同步。
+> 贡献者不需要在本地手动跑校验 —— PR 上会自动跑，红了按提示修即可。
+
 ## 校验命令
 
 ```bash

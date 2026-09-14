@@ -156,6 +156,23 @@ both READMEs so they stay in sync.
 > **You never run a command** — uploading is enough; Chinese-then-English (or the reverse)
 > is completed automatically.
 
+## External contribution flow (main is protected)
+
+The `main` branch is **protected** — nobody (including contributors) can push to it directly:
+
+1. **Fork** this repo and prepare the skill in your fork following the format above
+2. Open a **Pull Request** against `main`
+   - First-time contributors: a maintainer must click "Approve and run workflows" before CI runs
+3. **CI must be green** — GitHub Actions automatically runs:
+   - `scripts/gen-docs.py` doc-sync check (fails if the READMEs are out of sync)
+   - all 8 checks in `validate.sh`
+4. Only after the **maintainer approves** can the PR be merged
+
+In short: **all green + my approval = the only way into main**. Both are required.
+
+> The maintainer (repo owner) keeps direct push rights (`enforce_admins = false`) for quick day-to-day sync.
+> Contributors do not need to run validation locally — it runs automatically on the PR.
+
 ## Validation
 
 ```bash
