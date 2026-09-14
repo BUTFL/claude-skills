@@ -206,6 +206,6 @@ cp .skillignore.example .skillignore
 ## 补充说明
 
 - 只收录 **Claude Code 的 skill**，不收录 CodeBuddy 的（`upload.sh` 默认 `--from claude`）
-- 提交作者统一用 `BUTFL@users.noreply.github.com`（不改动全局 git 配置）
-- 仓库为私有，拉取需 `gh auth login`
+- 仓库是**公开**的：直接 `git clone` 或 `curl | bash` 安装，无需登录
+- **提交作者用你自己的 git 身份**（你的用户名 + 邮箱）。维护者本机的 `upload.sh` 会临时指定 `BUTFL@users.noreply.github.com`，与你无关，也不影响你的配置
 - 遇到 push 报 `Failure when receiving data from the peer`，用 `git -c http.version=HTTP/1.1 push`

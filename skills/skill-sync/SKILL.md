@@ -5,7 +5,7 @@ description: 从 GitHub 拉取并安装/更新我的个人 skills 合集（claud
 
 # Skill Sync
 
-把 `BUTFL/claude-skills`（私有仓库）里的 skills 安装或更新到本地。
+把 `BUTFL/claude-skills`（公开仓库）里的 skills 安装或更新到本地。
 
 ## 使用流程
 
@@ -16,24 +16,23 @@ description: 从 GitHub 拉取并安装/更新我的个人 skills 合集（claud
 
 2. **执行安装**
 
-   仓库是私有的，优先用 `gh` 拉取（需已 `gh auth login`）：
+   仓库是公开的，免 clone 一键安装：
 
    ```bash
-   gh repo clone BUTFL/claude-skills /tmp/claude-skills \
-     && /tmp/claude-skills/install.sh --target <claude|codebuddy|both>
+   curl -fsSL https://raw.githubusercontent.com/BUTFL/claude-skills/main/install.sh | bash -s -- --target <claude|codebuddy|both>
    ```
 
    更新已存在的 skill（覆盖旧版本）时追加 `--force`：
 
    ```bash
-   gh repo clone BUTFL/claude-skills /tmp/claude-skills \
-     && /tmp/claude-skills/install.sh --target <...> --force
+   curl -fsSL https://raw.githubusercontent.com/BUTFL/claude-skills/main/install.sh | bash -s -- --target <...> --force
    ```
 
-   若仓库已改为 public，可免 clone 运行：
+   网络受限时可先克隆再安装：
 
    ```bash
-   curl -fsSL https://raw.githubusercontent.com/BUTFL/claude-skills/main/install.sh | bash -s -- --target <...>
+   git clone --depth 1 https://github.com/BUTFL/claude-skills.git /tmp/claude-skills \
+     && /tmp/claude-skills/install.sh --target <...> [--force]
    ```
 
 3. **报告结果**：装了几个、跳过几个（跳过 = 本地已存在）。

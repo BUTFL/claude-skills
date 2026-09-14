@@ -213,7 +213,7 @@ Before submitting, the AI verifies:
 ## Additional notes
 
 - Only **Claude Code** skills are collected — not CodeBuddy ones (`upload.sh` defaults to `--from claude`)
-- Commit author is `BUTFL@users.noreply.github.com` (global git config is not modified)
-- The repo is private; pulling requires `gh auth login`
+- The repo is **public**: `git clone` or `curl | bash` — no login required
+- **Commits use your own git identity** (your name + email). The maintainer's local `upload.sh` passes `BUTFL@users.noreply.github.com` explicitly for its own commits — that does not affect you or your config
 - If push fails with `Failure when receiving data from the peer`, use `git -c http.version=HTTP/1.1 push`
 - Regenerate **both** READMEs with `python3 scripts/gen-docs.py` (runs automatically on upload)

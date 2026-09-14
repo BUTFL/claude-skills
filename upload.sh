@@ -32,6 +32,11 @@ LANG_MODE=""
 PR_MODE=""
 NOTE_LIST=()
 
+# 提交身份：默认维护者；其他使用者可用环境变量覆盖，例如
+#   COMMIT_NAME="Alice" COMMIT_EMAIL="alice@example.com" ./upload.sh --push
+COMMIT_NAME="${COMMIT_NAME:-BUTFL}"
+COMMIT_EMAIL="${COMMIT_EMAIL:-BUTFL@users.noreply.github.com}"
+
 while [ $# -gt 0 ]; do
   case "$1" in
     --from) FROM="${2:-claude}"; shift 2 ;;
@@ -511,7 +516,7 @@ if [ -n "$PUSH" ] || [ -n "$PR_MODE" ]; then
     BRANCH="sync/$(date '+%Y%m%d-%H%M%S')"
     git checkout -b "$BRANCH" >/dev/null 2>&1
     git add -A
-    git -c user.name=BUTFL -c user.email=BUTFL@users.noreply.github.com commit -F "$msgfile"
+    git -c user.name="$COMMIT_NAME" -c user.email="$COMMIT_EMAIL" commit -F "$msgfile"
     git -c http.version=HTTP/1.1 push -u origin "$BRANCH"
 
     prfile="$(mktemp)"
@@ -573,7 +578,7 @@ if [ -n "$PUSH" ] || [ -n "$PR_MODE" ]; then
     rm -f "$prfile"
   else
     git add -A
-    git -c user.name=BUTFL -c user.email=BUTFL@users.noreply.github.com commit -F "$msgfile"
+    git -c user.name="$COMMIT_NAME" -c user.email="$COMMIT_EMAIL" commit -F "$msgfile"
     git -c http.version=HTTP/1.1 push
     msg "✓ 已提交并推送" "✓ committed and pushed"
 
