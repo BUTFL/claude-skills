@@ -14,11 +14,12 @@ process below — no exceptions.
       ↓
 ③ AI code review                        ← manual pass: format & security
       ↓
-④ ./upload.sh --push                    ← only allowed after ② and ③
+④ ./upload.sh --push                    ← push directly to main
+   or ./upload.sh --pr                  ← open a Pull Request (bilingual title & body)
 ```
 
-`upload.sh --push` **runs `validate.sh` internally** — if validation fails, the commit is
-aborted and nothing is pushed.
+Both `--push` and `--pr` **run `validate.sh` internally** — if validation fails, the commit
+or the PR is aborted.
 
 ## Skill format
 
@@ -113,6 +114,25 @@ cp .skillignore.example .skillignore
 
 > ⚠️ Deleting a skill from the repo is **not enough** — the next `upload.sh` will
 > bring it back from your machine. Add it to `.skillignore` to hide it for real.
+
+## Pull Request flow
+
+Two ways to submit:
+
+| Way | Command | When |
+|---|---|---|
+| Direct push | `./upload.sh --push` | Solo maintenance, quick sync |
+| Pull Request | `./upload.sh --pr` | Collaboration, review needed |
+
+`--pr` automatically:
+
+1. Creates a branch `sync/<date>-<time>`
+2. Commits and pushes the branch
+3. Opens a PR with a **bilingual title and body** (added / updated skills listed in both languages)
+4. Switches back to `main`
+
+When opening a PR manually on GitHub, `.github/PULL_REQUEST_TEMPLATE.md`
+(a bilingual checklist) is applied automatically.
 
 ## Validation
 
