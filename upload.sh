@@ -522,6 +522,15 @@ if [ -n "$PUSH" ] || [ -n "$PR_MODE" ]; then
     git -c user.name=BUTFL -c user.email=BUTFL@users.noreply.github.com commit -F "$msgfile"
     git -c http.version=HTTP/1.1 push
     msg "✓ 已提交并推送" "✓ committed and pushed"
+
+    # 顺带同步仓库 About 描述里的 skill 数量（失败不影响主流程）
+    if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
+      _cnt=$(ls -1 "$DEST" | wc -l | tr -d ' ')
+      gh repo edit "${REPO_SLUG:-BUTFL/claude-skills}" --description \
+        "Claude Code skills 合集（${_cnt} 个）：一键安装、中英双语文档、上传前自动校验 | My Claude Code skills collection (${_cnt} skills): one-command install, bilingual docs, auto-validation before upload" \
+        >/dev/null 2>&1 || true
+      msg "✓ 已同步仓库描述（${_cnt} 个 skill）" "✓ repo description synced (${_cnt} skills)"
+    fi
   fi
 else
   msg "已写入仓库（未提交）。加 --push 直接推送，或 --pr 创建 Pull Request。" \
