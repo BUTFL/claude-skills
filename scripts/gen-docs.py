@@ -393,24 +393,13 @@ HUB_DESC = (
 
 # 常见任务 → skill 速查（想补充就加一行）
 HUB_SCENARIOS = [
-    ('做网页 / 前端界面 / 落地页', '`frontend-design`、`web-artifacts-builder`'),
-    ('做海报 / 封面 / 视觉作品', '`canvas-design`、`algorithmic-art`'),
-    ('统一设计风格 / 品牌规范', '`brand-guidelines`、`theme-factory`'),
-    ('写 Office 文档（Word / Excel / PPT / PDF）', '`docx`、`xlsx`、`pptx`、`pdf`'),
-    ('写技术文档 / 提案 / 对外沟通', '`doc-coauthoring`、`internal-comms`、`receipts`'),
-    ('从零开发一个功能（完整流程）',
-     '`brainstorming` → `writing-plans` → `test-driven-development` → `executing-plans` → `verification-before-completion`'),
-    ('排查疑难 bug', '`systematic-debugging`'),
-    ('代码审查 / 收到审查意见', '`requesting-code-review`、`receiving-code-review`'),
-    ('快速看懂一个项目 / 代码库', '`graphify`'),
-    ('写新 skill / 审查 skill 质量', '`skill-forge`、`skill-review`、`skill-creator`、`writing-skills`'),
-    ('做 MCP 服务 / 插件 / 命令 / Hook',
-     '`mcp-builder`、`build-mcp-server`、`build-mcp-app`、`plugin-structure`、`command-development`、`hook-development`'),
-    ('测试 Web 应用', '`webapp-testing`'),
-    ('多智能体并行 / 拆分复杂任务', '`dispatching-parallel-agents`、`subagent-driven-development`'),
-    ('查 Claude API（模型 / 价格 / 参数 / 迁移）', '`claude-api`'),
-    ('同步 / 备份 / 装回我的 skills', '`skill-sync`'),
-    ('做 GIF 动图', '`slack-gif-creator`'),
+    ('快速看懂一个项目 / 代码库结构', '`graphify`'),
+    ('规划一个开发任务', '`brainstorming`（先对齐需求）→ `writing-plans`（出实施计划）'),
+    ('排查疑难 bug / 异常', '`systematic-debugging`'),
+    ('做前端界面 / 视觉设计', '`frontend-design`'),
+    ('写 Word 文档', '`docx`'),
+    ('同步 / 备份 / 装回 skills', '`skill-sync`'),
+    ('不确定该用哪个', '就是本 skill —— 看下面的「分类表」列出的全部可用项'),
 ]
 
 
