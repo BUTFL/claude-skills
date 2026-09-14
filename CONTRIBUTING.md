@@ -1,0 +1,131 @@
+# 贡献与上传规范
+
+[English](CONTRIBUTING.en.md) | 简体中文
+
+本仓库收录的是 **Claude Code 的 skills**。为了保证一致性与安全，任何新增或修改都必须走完下面的流程，缺一不可。
+
+## 上传流程（强制）
+
+```
+① 按格式准备 skill
+      ↓
+② 跑校验：./validate.sh        ← 必须全绿
+      ↓
+③ AI code review               ← 我人工过一遍，确认规范与安全
+      ↓
+④ ./upload.sh --push           ← 前两步通过才允许提交
+```
+
+`upload.sh --push` **内置了 `validate.sh`**，校验不通过会直接中止提交，不会推到远程。
+
+## Skill 格式规范
+
+每个 skill 是 `skills/<name>/` 下的一个目录：
+
+```
+skills/<name>/
+├── SKILL.md          ← 必需
+├── references/       ← 可选：参考资料
+├── scripts/          ← 可选：脚本
+└── templates/        ← 可选：模板
+```
+
+### SKILL.md 要求
+
+```markdown
+---
+name: <name>              # 必须与目录名完全一致
+description: <一句话用途>   # 必填
+---
+
+# 标题
+
+正文：什么时候用、怎么用、注意事项。
+```
+
+### 硬性要求（validate.sh 会逐项检查）
+
+| 项 | 要求 |
+|---|---|
+| 目录名 | 只允许小写字母、数字、连字符（`a-z0-9-`） |
+| `SKILL.md` | 必须存在 |
+| frontmatter | 必须用 `---` 包裹，且包含 `name` 与 `description` |
+| `name` | 必须与目录名一致 |
+| 中文说明 | `descriptions.zh.json` 必须有该 skill 的中文用途说明（非空） |
+| 安全 | 不得包含 `.env`、`.pem`、`id_rsa*`、`.last-*`；不得含疑似密钥（`sk-`/`ghp_`/`gho_` 等） |
+| 杂项 | 不得有 `.DS_Store` |
+
+### 中文说明是强制项
+
+所有 skill 的说明统一维护在 `descriptions.zh.json`：
+
+```json
+{
+  "skill-name": "一句话说明这个 skill 是干什么的"
+}
+```
+
+- **必须中文**，保证 README、终端输出、提交信息全部是中文
+- 新增 skill 时同步加一条，否则校验不通过
+- 缺失时脚本会提示补充
+
+## 不想上传某个 skill
+
+### 方式一：直接告诉 AI（推荐）
+
+> 不用上传 add-tool-doc
+
+我会把该 skill 写进 `.skillignore`，之后每次上传都自动跳过，你不用再记。
+同样地，说「恢复上传 xxx」就能把它从名单里移除。
+
+### 方式二：上传时交互选择
+
+```bash
+./upload.sh --pick                 # 会先让你选语言（中文 / English）
+./upload.sh --lang en --pick       # 直接指定英文界面，不再询问
+```
+
+- 先选界面语言（照顾国外用户），再列出本机全部 skill 供你勾选
+- 界面语言决定所有提示文案；选 English 时提交信息也用英文
+- 装了 `fzf` → 直接是多选界面（Tab 选择、回车确认）；没装 → 输入编号，空格分隔，`a` = 全部
+- 选完后会问：未选中的要不要一并加入 `.skillignore`，加了以后就自动跳过
+
+### 方式三：手动编辑 `.skillignore`
+
+仓库根目录，每行一个 skill 名，`#` 开头为注释：
+
+```
+# 不上传的 skill
+add-tool-doc
+```
+
+> ⚠️ 注意：只在仓库里删掉某个 skill 是**没用的** —— 下次 `upload.sh` 还会从本机把它收回来。
+> 必须写进 `.skillignore`（或用上面两种方式）才会真正隐藏。
+
+## 校验命令
+
+```bash
+./validate.sh
+```
+
+检查 6 大类：目录结构、命名规范、frontmatter、中文说明、安全扫描、杂项。
+输出全绿（`✅ 全部检查通过`）才允许提交。
+
+## Code Review 清单
+
+提交前我会逐条核对：
+
+- [ ] `SKILL.md` 结构完整，frontmatter 的 `name` 与目录名一致
+- [ ] `descriptions.zh.json` 有对应的中文说明，表述准确
+- [ ] README 清单已同步（新增 skill 要加进对应分类，更新总数）
+- [ ] 没有密钥、token、个人信息等敏感内容
+- [ ] 没有无关的大文件（如依赖、构建产物）
+- [ ] `./validate.sh` 全绿
+- [ ] 提交信息由脚本自动生成（含中文用途与日期），无需手写
+
+## 补充说明
+
+- 只收录 **Claude Code 的 skill**，不收录 CodeBuddy 的（`upload.sh` 默认 `--from claude`）
+- 提交作者统一用 `BUTFL@users.noreply.github.com`（不改动全局 git 配置）
+- 仓库为私有，拉取需 `gh auth login`
+- 遇到 push 报 `Failure when receiving data from the peer`，用 `git -c http.version=HTTP/1.1 push`
