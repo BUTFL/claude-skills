@@ -2,7 +2,7 @@
 
 [English](README.en.md) | 简体中文
 
-我的 Claude Code skills 合集（共 **45 个**），支持一键安装、更新与备份。
+我的 Claude Code skills 合集（共 **57 个**），支持一键安装、更新与备份。
 
 > 中文说明来自 `descriptions.zh.json`，英文说明来自 `descriptions.en.json`；两份 README 由 `scripts/gen-docs.py` 自动生成并保持同步。
 
@@ -10,7 +10,7 @@
 
 ## 目录
 
-- [Skill 清单（45 个）](#skill-清单45-个)
+- [Skill 清单（57 个）](#skill-清单57-个)
 - [一键安装](#一键安装推荐)
 - [更新已有 skills](#更新已有-skills)
 - [反向同步（本机 → 仓库）](#本地新增-skill-后反向同步uploadsh)
@@ -19,9 +19,9 @@
 
 ---
 
-## Skill 清单（45 个）
+## Skill 清单（57 个）
 
-### 🎨 设计与视觉（6）
+### 🎨 设计与视觉（7）
 
 | Skill | 用途 |
 |---|---|
@@ -31,8 +31,9 @@
 | `brand-guidelines` | 在产物中套用 Anthropic 官方品牌色与字体规范。 |
 | `theme-factory` | 给产物套统一主题样式：幻灯片、文档、报告、落地页等。 |
 | `web-artifacts-builder` | 用现代前端技术栈构建复杂的多组件 claude.ai HTML artifact。 |
+| `slack-gif-creator` | 制作适配 Slack 的动图 GIF：尺寸约束、校验工具与优化建议。 |
 
-### 📄 办公文档（4）
+### 📄 办公文档（7）
 
 | Skill | 用途 |
 |---|---|
@@ -40,8 +41,11 @@
 | `pdf` | 创建、读取与处理 PDF：抽取文本、合并拆分、表单填写、加解密。 |
 | `pptx` | 创建与编辑 PowerPoint 演示文稿：母版、占位符、图表、备注与版式。 |
 | `xlsx` | 以表格文件为主要输入或输出的任务：创建、读取、编辑 Excel 与数据校验。 |
+| `receipts` | 把操作过程与产出整理成可核验的凭据与记录。 |
+| `internal-comms` | 撰写内部沟通文案：周报、公告、FAQ、状态更新等对内文档。 |
+| `doc-coauthoring` | 结构化文档共创流程：高效传递上下文、迭代打磨、验证读者可用性。 |
 
-### 🛠 开发工程 / MCP（12）
+### 🛠 开发工程 / MCP（16）
 
 | Skill | 用途 |
 |---|---|
@@ -56,7 +60,11 @@
 | `hook-development` | 开发 hookify 规则：定义 hook 的触发条件与行为，约束 AI 的自动化动作。 |
 | `plugin-settings` | 插件设置机制：声明与读取用户配置项。 |
 | `plugin-structure` | 插件目录与清单结构：plugin.json、skills、commands、hooks 的组织方式。 |
+| `skill-development` | 开发 skill 的规范：写 SKILL.md、加进插件、校验与迭代。 |
+| `skill-creator` | 创建新 skill、改进现有 skill、度量 skill 表现（含评测流程）。 |
+| `writing-skills` | 创建或编辑 skill，并在部署前验证其有效性。 |
 | `webapp-testing` | 用 Playwright 测试本地 Web 应用：验证前端行为、填表单、截图与调试。 |
+| `math-olympiad` | 数学奥赛题解题：严谨推理、分步证明与答案验证。 |
 
 ### 🔄 工作流与协作（13）
 
@@ -76,7 +84,7 @@
 | `finishing-a-development-branch` | 开发分支收尾：实现完成、测试通过后，决定如何合并与集成。 |
 | `using-superpowers` | 每次对话起始时建立「先查可用 skill 再回答」的工作方式。 |
 
-### 🤖 Claude Code 工具（9）
+### 🤖 Claude Code 工具（13）
 
 | Skill | 用途 |
 |---|---|
@@ -85,7 +93,11 @@
 | `claude-md-improver` | 审计并改进仓库里的 CLAUDE.md：质量检查、模板对照、定向修订。 |
 | `claude-security` | 代码安全菜单：扫描全库或指定范围，审计依赖、配置与潜在安全问题。 |
 | `writing-rules` | 编写 hookify 规则文件：语法、触发条件与调试方法。 |
+| `session-report` | 生成 Claude Code 会话用量报告（token、缓存、子代理、skills、高花费环节）的 HTML。 |
+| `project-artifact` | 为项目生成可交付的 artifact 文档（方案、报告、总结）。 |
+| `playground` | 在内置演练场里快速试验想法并可视化结果。 |
 | `discernment-nudge` | 在给出可执行的建议或结论后，追加 2-3 个追问，帮你核查事实、假设与遗漏。 |
+| `academy-guide` | 回答「如何使用 Claude / Claude 产品」类问题时，推荐 Claude Academy 里匹配的课程与教程。 |
 | `karpathy-guidelines` | Karpathy 式编码准则：先思考再写、最简实现、外科手术式改动、可验证的成功标准。 |
 | `example-command` | 示例斜杠命令，演示 frontmatter 选项与 skills 目录布局。 |
 | `example-skill` | 示例 skill，演示 skill 开发模式与标准模板结构。 |
