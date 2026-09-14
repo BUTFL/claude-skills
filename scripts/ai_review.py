@@ -121,3 +121,5 @@ PASS 或 FAIL（存在必须修复的问题就 FAIL）
 
 if __name__ == "__main__":
     sys.exit(main())
+
+# AI review smoke test
