@@ -1,0 +1,33 @@
+name: validate
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    name: validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Docs are in sync (README.md / README.en.md)
+        run: |
+          python3 scripts/gen-docs.py
+          if ! git diff --quiet; then
+            echo "::error::README 未同步 —— 请在本地运行 python3 scripts/gen-docs.py 后重新提交 / Docs out of sync: run scripts/gen-docs.py and commit"
+            git diff --stat
+            exit 1
+          fi
+
+      - name: Run validate.sh
+        run: bash validate.sh
