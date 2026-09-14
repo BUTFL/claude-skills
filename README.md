@@ -2,7 +2,7 @@
 
 [English](README.en.md) | 简体中文
 
-我的 Claude Code skills 合集（共 **47 个**），支持一键安装、更新与备份。
+我的 Claude Code skills 合集（共 **45 个**），支持一键安装、更新与备份。
 
 > 中文说明来自 `descriptions.zh.json`，英文说明来自 `descriptions.en.json`；两份 README 由 `scripts/gen-docs.py` 自动生成并保持同步。
 
@@ -10,7 +10,7 @@
 
 ## 目录
 
-- [Skill 清单（47 个）](#skill-清单47-个)
+- [Skill 清单（45 个）](#skill-清单45-个)
 - [一键安装](#一键安装推荐)
 - [更新已有 skills](#更新已有-skills)
 - [反向同步（本机 → 仓库）](#本地新增-skill-后反向同步uploadsh)
@@ -19,7 +19,7 @@
 
 ---
 
-## Skill 清单（47 个）
+## Skill 清单（45 个）
 
 ### 🎨 设计与视觉（6）
 
@@ -76,7 +76,7 @@
 | `finishing-a-development-branch` | 开发分支收尾：实现完成、测试通过后，决定如何合并与集成。 |
 | `using-superpowers` | 每次对话起始时建立「先查可用 skill 再回答」的工作方式。 |
 
-### 🤖 Claude Code 工具（11）
+### 🤖 Claude Code 工具（9）
 
 | Skill | 用途 |
 |---|---|
@@ -87,8 +87,6 @@
 | `writing-rules` | 编写 hookify 规则文件：语法、触发条件与调试方法。 |
 | `discernment-nudge` | 在给出可执行的建议或结论后，追加 2-3 个追问，帮你核查事实、假设与遗漏。 |
 | `karpathy-guidelines` | Karpathy 式编码准则：先思考再写、最简实现、外科手术式改动、可验证的成功标准。 |
-| `skill-review` | 审计 skill 的质量：结构合规、描述质量、工作流设计、token 效率、反模式检测，并给出具体可执行的改进建议。 |
-| `skill-forge` | 创建高质量 skill 的元技能：涵盖架构设计、工作流设计、提示词工程与打包，含 12 条经过实战检验的技巧。 |
 | `example-command` | 示例斜杠命令，演示 frontmatter 选项与 skills 目录布局。 |
 | `example-skill` | 示例 skill，演示 skill 开发模式与标准模板结构。 |
 
